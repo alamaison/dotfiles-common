@@ -20,6 +20,10 @@
              (setq session-globals-max-size 150)
              (add-hook 'after-init-hook 'session-initialize))
 
+(use-package comment-dwim-2
+             :ensure t
+             :bind ("M-;" . comment-dwim-2))
+
 (use-package zenburn-theme
              :ensure t
              :init (load-theme 'zenburn t))
