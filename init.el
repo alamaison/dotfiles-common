@@ -52,6 +52,19 @@
 (use-package cmake-mode
              :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
+(use-package js2-mode
+  :mode (("\\.js$" . js2-mode))
+  :config
+  (setq-default indent-tabs-mode nil)
+  (add-hook 'js2-mode-hook 'my-js2-mode)
+  (defun my-js2-mode ()
+    (set-variable 'indent-tabs-mode nil)
+    (setq-default js2-basic-offset 2))
+)
+
+(use-package scss-mode
+  :mode (("\\.scss$" . scss-mode))
+  :config (setq scss-compile-at-save nil))
 
 ;;{{{ Fonts and Colours
 
