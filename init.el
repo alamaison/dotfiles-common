@@ -105,6 +105,7 @@
 (show-paren-mode t)                      ; turn on paranthesis highlighting
 (setq case-fold-search t)                ; make search ignore case
 (setq compilation-skip-threshold 2)      ; skip warning on compilation next
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (eval-after-load 'compilation-mode
   '(progn (defun my-compilation-mode-hook ()      ; wrapping in compilation window
