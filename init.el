@@ -24,6 +24,14 @@
              :ensure t
              :bind ("M-;" . comment-dwim-2))
 
+(use-package uniquify ;; Change buffer naming to filename<directory>
+             :init
+	     (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
+
+(use-package midnight ;; Clean up stale buffers automatically
+             :init
+	     (setq clean-buffer-list-delay-general 2))
+
 (use-package zenburn-theme
              :ensure t
              :init (load-theme 'zenburn t))
