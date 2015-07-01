@@ -86,6 +86,7 @@
 ;; Font selection graceful fallback: http://emacswiki.org/emacs/SetFonts
 (defun font-candidate (&rest fonts)
   "Return existing font which first match."
+  (require 'cl)
   (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
 (set-face-attribute 'default
                     nil
