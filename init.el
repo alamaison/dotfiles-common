@@ -88,6 +88,16 @@
              :config
              (add-hook 'after-init-hook 'global-flycheck-mode))
 
+(use-package jedi
+             :config
+             (use-package company-jedi
+                          :config
+                          (add-hook 'python-mode-hook
+                                    (lambda () (add-to-list 'company-backends
+                                                            'company-jedi))))
+             (setq jedi:use-shortcuts t)
+             (add-hook 'python-mode-hook 'jedi:setup))
+
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode))
   :config
