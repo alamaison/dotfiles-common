@@ -80,6 +80,10 @@
 (use-package cmake-mode
              :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
+(use-package flycheck
+             :config
+             (add-hook 'after-init-hook 'global-flycheck-mode))
+
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode))
   :config
