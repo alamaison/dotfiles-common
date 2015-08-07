@@ -71,6 +71,12 @@
                     company-tooltip-limit 20)
              :config (add-hook 'after-init-hook 'global-company-mode))
 
+(use-package ido
+             :config
+             (setq ido-enable-flex-matching t)
+             (setq ido-everywhere t)
+             (ido-mode t))
+
 (use-package cmake-mode
              :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
