@@ -41,7 +41,11 @@
 
 (use-package powerline
              :ensure t
-             :init (powerline-default-theme))
+             :init
+             (powerline-default-theme)
+             (setq powerline-display-mule-info nil)
+             (setq powerline-display-hud nil)
+             (setq powerline-display-buffer-size nil))
 
 (use-package projectile
              :ensure t
