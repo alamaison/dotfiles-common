@@ -43,6 +43,16 @@
              :ensure t
              :init (powerline-default-theme))
 
+(use-package projectile
+             :ensure t
+             :config
+	     (setq projectile-mode-line
+		   '(:eval (list " ["
+				 (propertize (projectile-project-name)
+					     'face '(:foreground "#81a2be"))
+				 "]")))
+	     (projectile-global-mode))
+
 (use-package magit
              :ensure t
              :bind ("C-x g" . magit-status)
