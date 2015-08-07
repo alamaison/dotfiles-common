@@ -135,6 +135,7 @@
 
 ;;{{{ Miscellaneous
 
+(global-set-key (kbd "C-c C-c") 'recompile)
 (setq-default fill-column 80)
 (prefer-coding-system 'utf-8)
 (setq inhibit-startup-message t)         ; turn off splash screen
