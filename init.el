@@ -180,6 +180,8 @@
 (setq company-dabbrev-downcase nil)      ; preserve case in completions
 (setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+; Make log files auto-tail
+(add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
 
 (eval-after-load 'compilation-mode
   '(progn (defun my-compilation-mode-hook ()      ; wrapping in compilation window
