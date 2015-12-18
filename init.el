@@ -32,8 +32,7 @@
 	     (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 (use-package midnight ;; Clean up stale buffers automatically
-             :init
-	     (setq clean-buffer-list-delay-general 2))
+  )
 
 (use-package zenburn-theme
              :ensure t
