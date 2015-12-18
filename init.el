@@ -91,17 +91,26 @@
 
 (use-package flycheck
              :config
-             (add-hook 'after-init-hook 'global-flycheck-mode))
-
-(use-package jedi
+             (add-hook 'after-init-hook 'global-flycheck-mode)
+             (flycheck-add-mode 'javascript-eslint 'web-mode)
+             (flycheck-add-mode 'javascript-eslint 'js2-mode)
+             ;; disable jshint since we prefer eslint checking
+             (setq-default flycheck-disabled-checkers
+                           (append flycheck-disabled-checkers
+                                   '(javascript-jshint))))
+(use-package jedi-core
              :config
-             (use-package company-jedi
-                          :config
-                          (add-hook 'python-mode-hook
-                                    (lambda () (add-to-list 'company-backends
-                                                            'company-jedi))))
-             (setq jedi:use-shortcuts t)
+             (setq jedi:use-shortcuts t) ; M-. and M-,
              (add-hook 'python-mode-hook 'jedi:setup))
+(use-package company-jedi
+             :config
+             (add-hook 'python-mode-hook
+                       (lambda () (add-to-list 'company-backends
+                                               'company-jedi))))
+
+(add-hook 'python-mode-hook 'subword-mode)
+(add-hook 'python-mode-hook
+          (lambda () (local-set-key (kbd "C-c C-c") 'recompile)))
 
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode))
