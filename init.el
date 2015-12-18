@@ -178,6 +178,7 @@
 (setq case-fold-search t)                ; make search ignore case
 (setq compilation-skip-threshold 2)      ; skip warning on compilation next
 (setq company-dabbrev-downcase nil)      ; preserve case in completions
+(setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (eval-after-load 'compilation-mode
