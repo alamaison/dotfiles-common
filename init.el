@@ -80,6 +80,12 @@
              (setq ido-everywhere t)
              (ido-mode t))
 
+(use-package helm
+             :config
+	     (require 'helm-config)
+	     (global-set-key (kbd "C-c g") 'helm-grep-do-git-grep)
+	     (helm-mode t))
+
 (use-package cmake-mode
              :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
