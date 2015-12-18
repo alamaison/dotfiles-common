@@ -67,7 +67,7 @@
                                    'turn-on-magit-gitflow)))
 (use-package company
              :ensure t
-	     :diminish "cmp"
+	     :diminish "com"
              :init (setq
                     company-idle-delay 0.1
                     company-minimum-prefix-length 1
