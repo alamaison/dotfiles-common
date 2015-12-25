@@ -93,6 +93,8 @@
              :config
 	     (require 'helm-config)
 	     (global-set-key (kbd "M-x") 'helm-M-x)
+	     (global-set-key (kbd "C-x b") 'helm-mini)
+	     (global-set-key (kbd "C-x C-f") 'helm-find-files)
 	     (global-set-key (kbd "C-c g") 'helm-grep-do-git-grep)
 	     (helm-mode 1)
 	     (use-package helm-projectile
