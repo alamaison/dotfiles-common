@@ -87,6 +87,17 @@
 			  ;; disable ido faces to see flx highlights.
 			  (setq ido-use-faces nil)))
 
+(use-package helm
+             :ensure t
+             :diminish "H"
+             :config
+	     (require 'helm-config)
+	     (global-set-key (kbd "M-x") 'helm-M-x)
+	     (global-set-key (kbd "C-c g") 'helm-grep-do-git-grep)
+	     (helm-mode 1)
+	     (use-package helm-projectile
+                          :config (helm-projectile-on)))
+
 (use-package cmake-mode
              :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
