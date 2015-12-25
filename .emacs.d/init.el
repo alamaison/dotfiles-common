@@ -69,6 +69,7 @@
              :ensure t
 	     :diminish "cmp"
              :init (setq
+		    company-dabbrev-downcase nil      ; preserve case in completions
                     company-idle-delay 0.1
                     company-minimum-prefix-length 1
                     company-tooltip-limit 20)
@@ -143,7 +144,6 @@
 (show-paren-mode t)                      ; turn on paranthesis highlighting
 (setq case-fold-search t)                ; make search ignore case
 (setq compilation-skip-threshold 2)      ; skip warning on compilation next
-(setq company-dabbrev-downcase nil)      ; preserve case in completions
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (eval-after-load 'compilation-mode
