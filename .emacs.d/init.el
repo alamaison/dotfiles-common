@@ -167,11 +167,19 @@
 (setq compilation-skip-threshold 2)      ; skip warning on compilation next
 (add-hook                                ; strip trailing whitespace on save
  'before-save-hook 'delete-trailing-whitespace)
+
+(defun my-compilation-mode-hook ()
+  ;; wrapping in compilation window
+  (setq truncate-lines nil)
+  (setq truncate-partial-width-windows nil)
+
+  ;; Recognise Boost.Test failures
+  (add-to-list 'compilation-error-regexp-alist 'boost)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(boost
+                 "^\\(.*\\)(\\([0-9]+\\)): fatal error in" 1 2)))
 (eval-after-load 'compilation-mode
-  '(progn (defun my-compilation-mode-hook ()      ; wrapping in compilation window
-      (setq truncate-lines nil)
-      (setq truncate-partial-width-windows nil))
-          (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
+  '(progn (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
 (cond
  ((executable-find "aspell")
