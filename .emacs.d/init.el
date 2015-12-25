@@ -232,4 +232,24 @@
 
 ;;}}}
 
+
+;;{{{ Windows-specific
+
+(when (string-equal system-type "windows-nt")
+  ;; Prevent issues with the Windows null device (NUL)
+  ;; when using Unix find with rgrep.
+  ;; (defadvice grep-compute-defaults (around grep-compute-defaults-advice-null-device)
+  ;;   (let ((grep-use-null-device nil))
+  ;;     ad-do-it))
+
+  ;; (ad-activate 'grep-compute-defaults)
+
+;; Use binaries from ezwinports
+  (setenv "PATH"
+          (concat (expand-file-name "~/.emacs.d/bin/win32/")
+                  ";" (getenv "PATH")))
+)
+
+;;}}}
+
 (message "My .emacs loaded in %.2fs" (- (float-time) *emacs-load-start*))
