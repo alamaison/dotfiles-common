@@ -76,10 +76,16 @@
              :config (add-hook 'after-init-hook 'global-company-mode))
 
 (use-package ido
+             :ensure t
              :config
              (setq ido-enable-flex-matching t)
              (setq ido-everywhere t)
-             (ido-mode t))
+             (ido-mode t)
+	     (use-package flx-ido  ; better matching
+			  :ensure t
+	                  :config (flx-ido-mode 1)
+			  ;; disable ido faces to see flx highlights.
+			  (setq ido-use-faces nil)))
 
 (use-package cmake-mode
              :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
