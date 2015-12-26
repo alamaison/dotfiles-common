@@ -17,100 +17,100 @@
   (require 'use-package))
 
 (use-package diminish
-             :ensure t)
+  :ensure t)
 
 (use-package session
-             :ensure t
-             :init
-             (setq session-globals-max-size 150)
-             (add-hook 'after-init-hook 'session-initialize))
+  :ensure t
+  :init
+  (setq session-globals-max-size 150)
+  (add-hook 'after-init-hook 'session-initialize))
 
 (use-package comment-dwim-2
-             :ensure t
-             :bind ("M-;" . comment-dwim-2))
+  :ensure t
+  :bind ("M-;" . comment-dwim-2))
 
 (use-package uniquify ;; Change buffer naming to filename<directory>
-             :init
-	     (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
+  :init
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 (use-package midnight ;; Clean up stale buffers automatically
-             :init
-	     (setq clean-buffer-list-delay-general 2))
+  :init
+  (setq clean-buffer-list-delay-general 2))
 
 (use-package zenburn-theme
-             :ensure t
-             :init (load-theme 'zenburn t))
+  :ensure t
+  :init (load-theme 'zenburn t))
 
 (use-package powerline
-             :ensure t
-             :init
-             (powerline-default-theme)
-             (setq powerline-display-mule-info nil)
-             (setq powerline-display-hud nil)
-             (setq powerline-display-buffer-size nil))
+  :ensure t
+  :init
+  (powerline-default-theme)
+  (setq powerline-display-mule-info nil)
+  (setq powerline-display-hud nil)
+  (setq powerline-display-buffer-size nil))
 
 (use-package projectile
-             :ensure t
-             :config
-	     (setq projectile-mode-line
-		   '(:eval (list " ["
-				 (propertize (projectile-project-name)
-					     'face '(:foreground "#81a2be"))
-				 "]")))
-	     (projectile-global-mode))
+  :ensure t
+  :config
+  (setq projectile-mode-line
+	'(:eval (list " ["
+		      (propertize (projectile-project-name)
+				  'face '(:foreground "#81a2be"))
+		      "]")))
+  (projectile-global-mode))
 
 (use-package magit
-             :ensure t
-             :bind ("C-x g" . magit-status)
-             :config
-             (use-package magit-gitflow
-                          :config (add-hook
-                                   'magit-mode-hook
-                                   'turn-on-magit-gitflow)))
+  :ensure t
+  :bind ("C-x g" . magit-status)
+  :config
+  (use-package magit-gitflow
+    :config (add-hook
+	     'magit-mode-hook
+	     'turn-on-magit-gitflow)))
 (use-package company
-             :ensure t
-	     :diminish "cmp"
-             :init (setq
-		    company-dabbrev-downcase nil      ; preserve case in completions
-                    company-idle-delay 0.1
-                    company-minimum-prefix-length 1
-                    company-tooltip-limit 20)
-             :config (add-hook 'after-init-hook 'global-company-mode))
+  :ensure t
+  :diminish "cmp"
+  :init (setq
+	 company-dabbrev-downcase nil      ; preserve case in completions
+	 company-idle-delay 0.1
+	 company-minimum-prefix-length 1
+	 company-tooltip-limit 20)
+  :config (add-hook 'after-init-hook 'global-company-mode))
 
 (use-package ido
-             :ensure t
-             :config
-             (setq ido-enable-flex-matching t)
-             (setq ido-everywhere t)
-             (ido-mode t)
-	     (use-package flx-ido  ; better matching
-			  :ensure t
-	                  :config (flx-ido-mode 1)
-			  ;; disable ido faces to see flx highlights.
-			  (setq ido-use-faces nil)))
+  :ensure t
+  :config
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (ido-mode t)
+  (use-package flx-ido  ; better matching
+    :ensure t
+    :config (flx-ido-mode 1)
+    ;; disable ido faces to see flx highlights.
+    (setq ido-use-faces nil)))
 
 (use-package helm
-             :ensure t
-             :diminish "H"
-             :config
-	     (require 'helm-config)
-	     (global-set-key (kbd "M-x") 'helm-M-x)
-	     (global-set-key (kbd "C-x b") 'helm-mini)
-	     (global-set-key (kbd "C-x C-f") 'helm-find-files)
-	     (global-set-key (kbd "C-c g") 'helm-grep-do-git-grep)
-	     (helm-mode 1)
-	     (use-package helm-projectile
-                          :config (helm-projectile-on)))
+  :ensure t
+  :diminish "H"
+  :config
+  (require 'helm-config)
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-c g") 'helm-grep-do-git-grep)
+  (helm-mode 1)
+  (use-package helm-projectile
+    :config (helm-projectile-on)))
 
 (use-package cmake-mode
-             :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
+  :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
 (use-package cmake-project
-             :config
-	     (defun maybe-cmake-project-hook ()
-	       (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
-	     (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
-	     (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
+  :config
+  (defun maybe-cmake-project-hook ()
+    (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
+  (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
+  (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
 
 (use-package irony
   :config
@@ -134,18 +134,18 @@
     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
 
 (use-package flycheck
-             :config
-             (add-hook 'after-init-hook 'global-flycheck-mode))
+  :config
+  (add-hook 'after-init-hook 'global-flycheck-mode))
 
 (use-package jedi
-             :config
-             (use-package company-jedi
-                          :config
-                          (add-hook 'python-mode-hook
-                                    (lambda () (add-to-list 'company-backends
-                                                            'company-jedi))))
-             (setq jedi:use-shortcuts t)
-             (add-hook 'python-mode-hook 'jedi:setup))
+  :config
+  (use-package company-jedi
+    :config
+    (add-hook 'python-mode-hook
+	      (lambda () (add-to-list 'company-backends
+				      'company-jedi))))
+  (setq jedi:use-shortcuts t)
+  (add-hook 'python-mode-hook 'jedi:setup))
 
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode))
@@ -155,7 +155,7 @@
   (defun my-js2-mode ()
     (set-variable 'indent-tabs-mode nil)
     (setq-default js2-basic-offset 2))
-)
+  )
 
 (use-package scss-mode
   :mode (("\\.scss$" . scss-mode))
@@ -191,8 +191,8 @@
 (setq font-lock-maximum-decoration t)
 
 (font-lock-add-keywords nil ; highlight XXX style code tags in source files
-                          '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\)" 1
-                             font-lock-warning-face prepend)))
+                        '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\)" 1
+                           font-lock-warning-face prepend)))
 
 ;; Font selection graceful fallback: http://emacswiki.org/emacs/SetFonts
 (defun font-candidate (&rest fonts)
@@ -249,18 +249,18 @@
 (setq backup-directory-alist `(("." . "~/.backups_emacs")))
 (setq backup-by-copying t)
 (setq delete-old-versions t
-  kept-new-versions 6
-  kept-old-versions 2
-  version-control t)
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
 
 ;;}}}
 
 ;;{{{ Flymake
 
-; Show error under cursor in minibuffer
+					; Show error under cursor in minibuffer
 (eval-after-load 'flymake '(require 'flymake-cursor))
 
-; Show error markers in fringe
+					; Show error markers in fringe
 (eval-after-load 'flymake '(require 'rfringe))
 
 ;;}}}
@@ -277,11 +277,11 @@
 
   ;; (ad-activate 'grep-compute-defaults)
 
-;; Use binaries from ezwinports
+  ;; Use binaries from ezwinports
   (setenv "PATH"
           (concat (expand-file-name "~/.emacs.d/bin/win32/")
                   ";" (getenv "PATH")))
-)
+  )
 
 ;;}}}
 
