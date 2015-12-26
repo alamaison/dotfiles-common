@@ -37,6 +37,11 @@
   :init
   (setq clean-buffer-list-delay-general 2))
 
+(use-package ace-window ;; Better window switching with >2 windows
+  :ensure t
+  :bind ("C-x o" . ace-window)
+  :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+
 (use-package zenburn-theme
   :ensure t
   :init (load-theme 'zenburn t))
@@ -67,6 +72,7 @@
     :config (add-hook
 	     'magit-mode-hook
 	     'turn-on-magit-gitflow)))
+
 (use-package company
   :ensure t
   :diminish "cmp"
@@ -160,6 +166,32 @@
 (use-package scss-mode
   :mode (("\\.scss$" . scss-mode))
   :config (setq scss-compile-at-save nil))
+
+(use-package restclient)
+
+(use-package which-key)
+
+(use-package expand-region
+  :bind ("C-@" . er/expand-region))
+
+(use-package git-gutter+
+  :ensure t
+  :init (global-git-gutter+-mode)
+  :config
+  (setq git-gutter+-hide-gutter t)
+  (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)
+  (define-key git-gutter+-mode-map (kbd "C-x p") 'git-gutter+-previous-hunk)
+  (define-key git-gutter+-mode-map (kbd "C-x v =") 'git-gutter+-show-hunk)
+  (define-key git-gutter+-mode-map (kbd "C-x r") 'git-gutter+-revert-hunks)
+  (define-key git-gutter+-mode-map (kbd "C-x t") 'git-gutter+-stage-hunks)
+  (define-key git-gutter+-mode-map (kbd "C-x c") 'git-gutter+-commit)
+  (define-key git-gutter+-mode-map (kbd "C-x C") 'git-gutter+-stage-and-commit)
+  (define-key git-gutter+-mode-map (kbd "C-x C-y") 'git-gutter+-stage-and-commit-whole-buffer)
+  (define-key git-gutter+-mode-map (kbd "C-x U") 'git-gutter+-unstage-whole-buffer)
+  :diminish (git-gutter+-mode . "gg"))
+
+(use-package symon
+  :config (symon-mode t))
 
 (defun my-c-mode-common-hook ()
   ;; force only spaces for indentation
