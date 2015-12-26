@@ -201,8 +201,6 @@
 (use-package expand-region
   :bind ("C-@" . er/expand-region))
 
-(use-package symon
-  :config (symon-mode t))
 (use-package diff-hl
     :defer t
     :init
@@ -210,6 +208,7 @@
     (add-hook 'prog-mode-hook 'diff-hl-mode)
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
+(use-package symon)
 
 (defun my-c-mode-common-hook ()
   ;; force only spaces for indentation
