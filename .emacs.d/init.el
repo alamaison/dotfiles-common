@@ -268,6 +268,7 @@
 (setq compilation-skip-threshold 2)      ; skip warning on compilation next
 (add-hook                                ; strip trailing whitespace on save
  'before-save-hook 'delete-trailing-whitespace)
+(setq-default indicate-empty-lines t)    ; show end-of-file in fringe
 
 (defun my-compilation-mode-hook ()
   ;; wrapping in compilation window
