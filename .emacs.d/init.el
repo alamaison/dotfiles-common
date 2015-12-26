@@ -152,6 +152,23 @@
   :mode (("\\.scss$" . scss-mode))
   :config (setq scss-compile-at-save nil))
 
+(defun my-c-mode-common-hook ()
+  ;; force only spaces for indentation
+  (setq indent-tabs-mode nil
+        tab-width 4
+        c-basic-offset tab-width))
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(defun my-emacs-lisp-mode-hook ()
+  ;; force only spaces for indentation
+  (setq indent-tabs-mode nil))
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+
+(defun my-python-mode-hook ()
+  ;; force only spaces for indentation
+  (setq indent-tabs-mode nil))
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+
 ;;{{{ Fonts and Colours
 
 (global-font-lock-mode t)                ; turn on syntax highlighting
