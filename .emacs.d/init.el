@@ -49,7 +49,21 @@
 
 (use-package zenburn-theme
   :ensure t
-  :init (load-theme 'zenburn t))
+  :init (load-theme 'zenburn t)
+  :config
+  (zenburn-with-color-variables
+    (custom-theme-set-faces
+     'zenburn
+     `(mode-line
+       ((,class (:foreground "black" :background "#f9b593" :box nil))
+        (t :inverse-video t)))
+     `(mode-line-inactive
+       ((t (:foreground ,zenburn-green-1 :background ,zenburn-bg-05 :box nil))))
+     `(mode-line-buffer-id ((t (:foreground "black" :weight bold))))
+     `(powerline-active1
+       ((t (:foreground ,zenburn-green-1 :background ,zenburn-bg-05
+                        :inherit mode-line))))
+     `(powerline-active2 ((t (:background ,zenburn-bg+2 :inherit mode-line)))))))
 
 (use-package powerline
   :ensure t
@@ -62,11 +76,15 @@
 (use-package projectile
   :ensure t
   :config
-  (setq projectile-mode-line
-	'(:eval (list " ["
-		      (propertize (projectile-project-name)
-				  'face '(:foreground "#81a2be"))
-		      "]")))
+  (defun my-format-projectile-modeline ()
+    (propertize (format " |%s|" (projectile-project-name))
+                'face '(:foreground "black" :background "#81a2be")))
+  (defun my-conditional-projectile-modeline ()
+    (if (condition-case nil (and projectile-require-project-root
+                                 (projectile-project-root))
+          (error nil))
+        (my-format-projectile-modeline) ""))
+  (setq projectile-mode-line '(:eval (my-conditional-projectile-modeline)))
   (projectile-global-mode))
 
 (use-package magit
