@@ -103,6 +103,13 @@
 (use-package cmake-mode
              :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
+(use-package cmake-project
+             :config
+	     (defun maybe-cmake-project-hook ()
+	       (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
+	     (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
+	     (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
+
 (use-package irony
   :config
   (setq w32-pipe-read-delay 0)
