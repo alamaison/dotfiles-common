@@ -1,5 +1,7 @@
 (defvar *emacs-load-start* (float-time))
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
+
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -165,6 +167,13 @@
         tab-width 4
         c-basic-offset tab-width))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(defun maybe-libssh2-style ()
+  (when (and buffer-file-name
+             (string-match "libssh2" buffer-file-name))
+    (load "libssh2-style")
+    (libssh2-c-mode-common-hook)))
+(add-hook 'c-mode-hook 'maybe-libssh2-style)
 
 (defun my-emacs-lisp-mode-hook ()
   ;; force only spaces for indentation
