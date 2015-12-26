@@ -37,6 +37,11 @@
   :init
   (setq clean-buffer-list-delay-general 2))
 
+;; I would disable abbrev if I knew how, but I don't know what's starting it so
+;; just diminish it instead
+(use-package abbrev
+  :diminish abbrev-mode)
+
 (use-package ace-window ;; Better window switching with >2 windows
   :ensure t
   :bind ("C-x o" . ace-window)
@@ -69,13 +74,14 @@
   :bind ("C-x g" . magit-status)
   :config
   (use-package magit-gitflow
+    :diminish "GitF"
     :config (add-hook
 	     'magit-mode-hook
 	     'turn-on-magit-gitflow)))
 
 (use-package company
   :ensure t
-  :diminish "cmp"
+  :diminish company-mode
   :init (setq
 	 company-dabbrev-downcase nil      ; preserve case in completions
 	 company-idle-delay 0.1
@@ -97,13 +103,13 @@
 
 (use-package helm
   :ensure t
-  :diminish "H"
+  :diminish helm-mode
+  :bind (("M-x" . helm-M-x)
+         ("C-x b" . helm-mini)
+         ("C-x C-f" . helm-find-files)
+         ("C-c g" . helm-grep-do-git-grep))
   :config
   (require 'helm-config)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "C-x b") 'helm-mini)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-c g") 'helm-grep-do-git-grep)
   (helm-mode 1)
   (use-package helm-projectile
     :config (helm-projectile-on)))
@@ -119,6 +125,7 @@
   (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
 
 (use-package irony
+  :diminish "Iy"
   :config
   (setq w32-pipe-read-delay 0)
   (add-hook 'c++-mode-hook 'irony-mode)
@@ -169,7 +176,9 @@
 
 (use-package restclient)
 
-(use-package which-key)
+(use-package which-key
+  :diminish which-key-mode
+  :config (which-key-mode t))
 
 (use-package expand-region
   :bind ("C-@" . er/expand-region))
