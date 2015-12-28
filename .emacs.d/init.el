@@ -234,7 +234,9 @@
 
 (defun my-python-mode-hook ()
   ;; force only spaces for indentation
-  (setq indent-tabs-mode nil))
+  (setq indent-tabs-mode nil)
+  ;; disable electric-indent - apparently python works better without
+  (electric-indent-mode -1))
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
 ;;{{{ Fonts and Colours
@@ -272,6 +274,7 @@
 (add-hook                                ; strip trailing whitespace on save
  'before-save-hook 'delete-trailing-whitespace)
 (setq-default indicate-empty-lines t)    ; show end-of-file in fringe
+(global-set-key (kbd "C-j") 'newline)    ; Give C-J same behaviour as RET > 24.1
 
 (defun my-compilation-mode-hook ()
   ;; wrapping in compilation window
