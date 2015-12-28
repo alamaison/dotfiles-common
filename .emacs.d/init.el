@@ -124,7 +124,8 @@
     (setq ido-use-faces nil)))
 
 (use-package helm
-  :ensure t
+  :ensure
+  :demand
   :diminish helm-mode
   :bind (("M-x" . helm-M-x)
          ("C-x b" . helm-mini)
