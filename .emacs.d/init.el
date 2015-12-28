@@ -130,12 +130,15 @@
   :bind (("M-x" . helm-M-x)
          ("C-x b" . helm-mini)
          ("C-x C-f" . helm-find-files)
+         ("M-s o" . helm-occur)
          ("C-c g" . helm-grep-do-git-grep))
-  :config
-  (require 'helm-config)
-  (helm-mode 1)
-  (use-package helm-projectile
-    :config (helm-projectile-on)))
+  :config (progn
+            (require 'helm-config)
+            (setq helm-ff-file-name-history-use-recentf t)
+            (helm-mode 1)
+            (use-package helm-projectile
+              :config (helm-projectile-on))))
+
 
 (use-package cmake-mode
   :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
