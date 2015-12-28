@@ -42,6 +42,10 @@
 (use-package abbrev
   :diminish abbrev-mode)
 
+(use-package ace-jump-mode
+  :ensure
+  :bind ("C-c SPC" . ace-jump-mode))
+
 (use-package ace-window ;; Better window switching with >2 windows
   :ensure t
   :bind ("C-x o" . ace-window)
