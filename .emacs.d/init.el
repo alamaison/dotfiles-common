@@ -217,7 +217,8 @@
   ;; force only spaces for indentation
   (setq indent-tabs-mode nil
         tab-width 4
-        c-basic-offset tab-width))
+        c-basic-offset tab-width)
+  (local-set-key (kbd "C-c C-c") 'recompile))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 (defun maybe-libssh2-style ()
