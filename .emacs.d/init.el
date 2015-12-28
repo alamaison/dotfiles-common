@@ -239,6 +239,13 @@
   (electric-indent-mode -1))
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
+(c-add-style "my-bsd"
+              '("bsd"
+                (c-offsets-alist
+                 (innamespace . -))))
+(setq c-default-style
+      '((java-mode . "java") (awk-mode . "awk") (other . "my-bsd")))
+
 ;;{{{ Fonts and Colours
 
 (global-font-lock-mode t)                ; turn on syntax highlighting
