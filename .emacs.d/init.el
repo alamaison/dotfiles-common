@@ -208,7 +208,6 @@
 (use-package diff-hl
     :defer t
     :init
-    (setq diff-hl-side 'right)
     (add-hook 'prog-mode-hook 'diff-hl-mode)
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
