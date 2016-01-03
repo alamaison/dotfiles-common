@@ -354,4 +354,33 @@
 
 ;;}}}
 
+;;{{{ Erc
+
+;; Loads password using auth-source (from .authinfo)
+
+(use-package erc
+  :commands erc
+  :config
+  (setq erc-server "irc.freenode.net"
+        erc-port 6667
+        erc-nick "a_lamaison"
+        erc-prompt-for-password nil
+        erc-prompt-for-nickserv-password nil
+        erc-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE"))
+
+  (use-package erc-join
+    :config
+    (erc-autojoin-mode t)
+    (setq erc-join-buffer 'bury
+          erc-autojoin-channels-alist
+          (list `(".*\\.freenode.net" "#emacs" "#libssh2"))))
+
+  (use-package erc-track
+    :config
+    (erc-track-mode t)
+    (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                    "324" "329" "332" "333" "353" "477"))))
+
+;;}}}
+
 (message "My .emacs loaded in %.2fs" (- (float-time) *emacs-load-start*))
