@@ -287,6 +287,7 @@
  'before-save-hook 'delete-trailing-whitespace)
 (setq-default indicate-empty-lines t)    ; show end-of-file in fringe
 (global-set-key (kbd "C-j") 'newline)    ; Give C-J same behaviour as RET > 24.1
+(setq scroll-preserve-screen-position 'always) ; Restore point when scrolling back
 
 (defun my-compilation-mode-hook ()
   ;; wrapping in compilation window
