@@ -202,6 +202,11 @@
 
 (use-package restclient)
 
+(use-package dockerfile-mode
+  :mode (("Dockerfile\\'" . dockerfile-mode)))
+
+(use-package docker)
+
 (use-package which-key
   :diminish which-key-mode
   :config (which-key-mode t))
