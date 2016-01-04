@@ -218,9 +218,12 @@
   :bind ("C-@" . er/expand-region))
 
 (use-package diff-hl
-    :defer t
+    :ensure
     :init
-    (add-hook 'prog-mode-hook 'diff-hl-mode)
+    (add-hook 'prog-mode-hook 'diff-hl-mode))
+
+(use-package diff-hl-dired
+    :init
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 (use-package symon)
