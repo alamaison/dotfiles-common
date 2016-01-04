@@ -34,8 +34,7 @@
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 (use-package midnight ;; Clean up stale buffers automatically
-  :init
-  (setq clean-buffer-list-delay-general 2))
+  )
 
 ;; I would disable abbrev if I knew how, but I don't know what's starting it so
 ;; just diminish it instead
@@ -173,18 +172,27 @@
     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
 
 (use-package flycheck
-  :config
-  (add-hook 'after-init-hook 'global-flycheck-mode))
+             :config
+             (add-hook 'after-init-hook 'global-flycheck-mode)
+             (flycheck-add-mode 'javascript-eslint 'web-mode)
+             (flycheck-add-mode 'javascript-eslint 'js2-mode)
+             ;; disable jshint since we prefer eslint checking
+             (setq-default flycheck-disabled-checkers
+                           (append flycheck-disabled-checkers
+                                   '(javascript-jshint))))
+(use-package jedi-core
+             :config
+             (setq jedi:use-shortcuts t) ; M-. and M-,
+             (add-hook 'python-mode-hook 'jedi:setup))
+(use-package company-jedi
+             :config
+             (add-hook 'python-mode-hook
+                       (lambda () (add-to-list 'company-backends
+                                               'company-jedi))))
 
-(use-package jedi
-  :config
-  (use-package company-jedi
-    :config
-    (add-hook 'python-mode-hook
-	      (lambda () (add-to-list 'company-backends
-				      'company-jedi))))
-  (setq jedi:use-shortcuts t)
-  (add-hook 'python-mode-hook 'jedi:setup))
+(add-hook 'python-mode-hook 'subword-mode)
+(add-hook 'python-mode-hook
+          (lambda () (local-set-key (kbd "C-c C-c") 'recompile)))
 
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode))
@@ -215,9 +223,12 @@
   :bind ("C-@" . er/expand-region))
 
 (use-package diff-hl
-    :defer t
+    :ensure
     :init
-    (add-hook 'prog-mode-hook 'diff-hl-mode)
+    (add-hook 'prog-mode-hook 'diff-hl-mode))
+
+(use-package diff-hl-dired
+    :init
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 (use-package symon)
@@ -275,11 +286,31 @@
                     :font (font-candidate "Consolas-10:weight=normal"
                                           "DejaVu Sans Mono-10:weight=normal"))
 
+;; Colour support in compilation mode
+(ignore-errors
+  (require 'ansi-color)
+  (defun my-colorize-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
+
 ;;}}}
 
 ;;{{{ Miscellaneous
 
 (global-set-key (kbd "C-c C-c") 'recompile)
+
+(defun visit-term-buffer ()
+  "Create or visit a terminal buffer."
+  (interactive)
+  (if (not (get-buffer "*ansi-term*"))
+      (progn
+        (split-window-sensibly (selected-window))
+        (other-window 1)
+        (ansi-term (getenv "SHELL")))
+    (switch-to-buffer-other-window "*ansi-term*")))
+(global-set-key (kbd "C-x t") 'visit-term-buffer)
+
 (setq-default fill-column 80)
 (prefer-coding-system 'utf-8)
 (setq inhibit-startup-message t)         ; turn off splash screen
@@ -288,6 +319,9 @@
 (show-paren-mode t)                      ; turn on paranthesis highlighting
 (setq case-fold-search t)                ; make search ignore case
 (setq compilation-skip-threshold 2)      ; skip warning on compilation next
+(setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
+(add-to-list                             ; Make log files auto-tail
+ 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
 (add-hook                                ; strip trailing whitespace on save
  'before-save-hook 'delete-trailing-whitespace)
 (setq-default indicate-empty-lines t)    ; show end-of-file in fringe
@@ -304,6 +338,7 @@
   (add-to-list 'compilation-error-regexp-alist-alist
                '(boost
                  "^\\(.*\\)(\\([0-9]+\\)): fatal error in" 1 2)))
+
 (eval-after-load 'compilation-mode
   '(progn (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
