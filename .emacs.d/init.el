@@ -19,7 +19,7 @@
 (set-face-attribute 'default
                     nil
                     :font (font-candidate "Consolas-10"
-                                          "Ubuntu Mono-10"
+                                          "Ubuntu Mono"
                                           "Droid Sans Mono-8"
                                           "DejaVu Sans Mono-10"))
 
