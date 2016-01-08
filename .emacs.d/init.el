@@ -286,9 +286,7 @@
 
 (defun my-python-mode-hook ()
   ;; force only spaces for indentation
-  (setq indent-tabs-mode nil)
-  ;; disable electric-indent - apparently python works better without
-  (electric-indent-mode -1))
+  (setq indent-tabs-mode nil))
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
 (c-add-style "my-bsd"
