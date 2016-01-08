@@ -161,7 +161,7 @@
          ("C-x b" . helm-mini)
          ("C-x C-f" . helm-find-files)
          ("M-s o" . helm-occur)
-         ("C-c g" . helm-grep-do-git-grep))
+         ("M-s g" . helm-grep-do-git-grep))
   :config (progn
             (require 'helm-config)
             (setq helm-ff-file-name-history-use-recentf t)
@@ -301,6 +301,8 @@
 ;;{{{ Miscellaneous
 
 (global-set-key (kbd "C-c C-c") 'recompile)
+(global-set-key (kbd "M-s r") 'rgrep)
+
 
 (defun visit-term-buffer ()
   "Create or visit a terminal buffer."
