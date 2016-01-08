@@ -2,6 +2,37 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 
+;;{{{ Fonts and Colours
+
+(global-font-lock-mode t)                ; turn on syntax highlighting
+(setq font-lock-maximum-decoration t)
+
+(font-lock-add-keywords nil ; highlight XXX style code tags in source files
+                        '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\)" 1
+                           font-lock-warning-face prepend)))
+
+;; Font selection graceful fallback: http://emacswiki.org/emacs/SetFonts
+(defun font-candidate (&rest fonts)
+  "Return existing font which first match."
+  (require 'cl)
+  (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
+(set-face-attribute 'default
+                    nil
+                    :font (font-candidate "Consolas-10"
+                                          "Ubuntu Mono-10"
+                                          "Droid Sans Mono-8"
+                                          "DejaVu Sans Mono-10"))
+
+;; Colour support in compilation mode
+(ignore-errors
+  (require 'ansi-color)
+  (defun my-colorize-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
+
+;;}}}
+
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -34,8 +65,7 @@
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 (use-package midnight ;; Clean up stale buffers automatically
-  :init
-  (setq clean-buffer-list-delay-general 2))
+  )
 
 ;; I would disable abbrev if I knew how, but I don't know what's starting it so
 ;; just diminish it instead
@@ -131,7 +161,7 @@
          ("C-x b" . helm-mini)
          ("C-x C-f" . helm-find-files)
          ("M-s o" . helm-occur)
-         ("C-c g" . helm-grep-do-git-grep))
+         ("M-s g" . helm-grep-do-git-grep))
   :config (progn
             (require 'helm-config)
             (setq helm-ff-file-name-history-use-recentf t)
@@ -173,18 +203,27 @@
     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
 
 (use-package flycheck
-  :config
-  (add-hook 'after-init-hook 'global-flycheck-mode))
+             :config
+             (add-hook 'after-init-hook 'global-flycheck-mode)
+             (flycheck-add-mode 'javascript-eslint 'web-mode)
+             (flycheck-add-mode 'javascript-eslint 'js2-mode)
+             ;; disable jshint since we prefer eslint checking
+             (setq-default flycheck-disabled-checkers
+                           (append flycheck-disabled-checkers
+                                   '(javascript-jshint))))
+(use-package jedi-core
+             :config
+             (setq jedi:use-shortcuts t) ; M-. and M-,
+             (add-hook 'python-mode-hook 'jedi:setup))
+(use-package company-jedi
+             :config
+             (add-hook 'python-mode-hook
+                       (lambda () (add-to-list 'company-backends
+                                               'company-jedi))))
 
-(use-package jedi
-  :config
-  (use-package company-jedi
-    :config
-    (add-hook 'python-mode-hook
-	      (lambda () (add-to-list 'company-backends
-				      'company-jedi))))
-  (setq jedi:use-shortcuts t)
-  (add-hook 'python-mode-hook 'jedi:setup))
+(add-hook 'python-mode-hook 'subword-mode)
+(add-hook 'python-mode-hook
+          (lambda () (local-set-key (kbd "C-c C-c") 'recompile)))
 
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode))
@@ -202,6 +241,11 @@
 
 (use-package restclient)
 
+(use-package dockerfile-mode
+  :mode (("Dockerfile\\'" . dockerfile-mode)))
+
+(use-package docker)
+
 (use-package which-key
   :diminish which-key-mode
   :config (which-key-mode t))
@@ -210,9 +254,12 @@
   :bind ("C-@" . er/expand-region))
 
 (use-package diff-hl
-    :defer t
+    :ensure
     :init
-    (add-hook 'prog-mode-hook 'diff-hl-mode)
+    (add-hook 'prog-mode-hook 'diff-hl-mode))
+
+(use-package diff-hl-dired
+    :init
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 (use-package symon)
@@ -239,9 +286,7 @@
 
 (defun my-python-mode-hook ()
   ;; force only spaces for indentation
-  (setq indent-tabs-mode nil)
-  ;; disable electric-indent - apparently python works better without
-  (electric-indent-mode -1))
+  (setq indent-tabs-mode nil))
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
 (c-add-style "my-bsd"
@@ -251,30 +296,23 @@
 (setq c-default-style
       '((java-mode . "java") (awk-mode . "awk") (other . "my-bsd")))
 
-;;{{{ Fonts and Colours
-
-(global-font-lock-mode t)                ; turn on syntax highlighting
-(setq font-lock-maximum-decoration t)
-
-(font-lock-add-keywords nil ; highlight XXX style code tags in source files
-                        '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\)" 1
-                           font-lock-warning-face prepend)))
-
-;; Font selection graceful fallback: http://emacswiki.org/emacs/SetFonts
-(defun font-candidate (&rest fonts)
-  "Return existing font which first match."
-  (require 'cl)
-  (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
-(set-face-attribute 'default
-                    nil
-                    :font (font-candidate "Consolas-10:weight=normal"
-                                          "DejaVu Sans Mono-10:weight=normal"))
-
-;;}}}
-
 ;;{{{ Miscellaneous
 
 (global-set-key (kbd "C-c C-c") 'recompile)
+(global-set-key (kbd "M-s r") 'rgrep)
+
+
+(defun visit-term-buffer ()
+  "Create or visit a terminal buffer."
+  (interactive)
+  (if (not (get-buffer "*ansi-term*"))
+      (progn
+        (split-window-sensibly (selected-window))
+        (other-window 1)
+        (ansi-term (getenv "SHELL")))
+    (switch-to-buffer-other-window "*ansi-term*")))
+(global-set-key (kbd "C-x t") 'visit-term-buffer)
+
 (setq-default fill-column 80)
 (prefer-coding-system 'utf-8)
 (setq inhibit-startup-message t)         ; turn off splash screen
@@ -283,10 +321,14 @@
 (show-paren-mode t)                      ; turn on paranthesis highlighting
 (setq case-fold-search t)                ; make search ignore case
 (setq compilation-skip-threshold 2)      ; skip warning on compilation next
+(setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
+(add-to-list                             ; Make log files auto-tail
+ 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
 (add-hook                                ; strip trailing whitespace on save
  'before-save-hook 'delete-trailing-whitespace)
 (setq-default indicate-empty-lines t)    ; show end-of-file in fringe
 (global-set-key (kbd "C-j") 'newline)    ; Give C-J same behaviour as RET > 24.1
+(setq scroll-preserve-screen-position 'always) ; Restore point when scrolling back
 
 (defun my-compilation-mode-hook ()
   ;; wrapping in compilation window
@@ -298,6 +340,7 @@
   (add-to-list 'compilation-error-regexp-alist-alist
                '(boost
                  "^\\(.*\\)(\\([0-9]+\\)): fatal error in" 1 2)))
+
 (eval-after-load 'compilation-mode
   '(progn (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
 
@@ -352,5 +395,40 @@
   )
 
 ;;}}}
+
+;;{{{ Erc
+
+;; Loads password using auth-source (from .authinfo)
+
+(use-package erc
+  :commands erc
+  :config
+  (setq erc-server "irc.freenode.net"
+        erc-port 6667
+        erc-nick "a_lamaison"
+        erc-prompt-for-password nil
+        erc-prompt-for-nickserv-password nil
+        erc-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE"))
+
+  (use-package erc-join
+    :config
+    (erc-autojoin-mode t)
+    (setq erc-join-buffer 'bury
+          erc-autojoin-channels-alist
+          (list `(".*\\.freenode.net" "#emacs" "#libssh2"))))
+
+  (use-package erc-track
+    :config
+    (erc-track-mode t)
+    (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                    "324" "329" "332" "333" "353" "477"))))
+
+;;}}}
+
+(require 'visual-regexp-steroids)
+(define-key global-map (kbd "C-M-%") 'vr/query-replace)
+(define-key esc-map (kbd "C-M-r") 'vr/isearch-backward) ;; C-M-r
+(define-key esc-map (kbd "C-M-s") 'vr/isearch-forward) ;; C-M-s
+(setq vr/engine 'pcre2el)
 
 (message "My .emacs loaded in %.2fs" (- (float-time) *emacs-load-start*))
