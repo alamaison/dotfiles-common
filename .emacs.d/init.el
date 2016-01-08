@@ -259,13 +259,13 @@
   :bind ("C-@" . er/expand-region))
 
 (use-package diff-hl
-    :ensure
-    :init
-    (add-hook 'prog-mode-hook 'diff-hl-mode))
+  :ensure
+  :init
+  (add-hook 'prog-mode-hook 'diff-hl-mode))
 
 (use-package diff-hl-dired
-    :init
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+  :init
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 (use-package symon)
 
@@ -295,9 +295,9 @@
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
 (c-add-style "my-bsd"
-              '("bsd"
-                (c-offsets-alist
-                 (innamespace . -))))
+             '("bsd"
+               (c-offsets-alist
+                (innamespace . -))))
 (setq c-default-style
       '((java-mode . "java") (awk-mode . "awk") (other . "my-bsd")))
 
