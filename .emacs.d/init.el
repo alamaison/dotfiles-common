@@ -425,4 +425,10 @@
 
 ;;}}}
 
+(require 'visual-regexp-steroids)
+(define-key global-map (kbd "C-M-%") 'vr/query-replace)
+(define-key esc-map (kbd "C-M-r") 'vr/isearch-backward) ;; C-M-r
+(define-key esc-map (kbd "C-M-s") 'vr/isearch-forward) ;; C-M-s
+(setq vr/engine 'pcre2el)
+
 (message "My .emacs loaded in %.2fs" (- (float-time) *emacs-load-start*))
