@@ -167,6 +167,7 @@
             (setq helm-ff-file-name-history-use-recentf t)
             (helm-mode 1)
             (use-package helm-projectile
+              :ensure
               :config (helm-projectile-on))))
 
 
@@ -203,23 +204,25 @@
     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
 
 (use-package flycheck
-             :config
-             (add-hook 'after-init-hook 'global-flycheck-mode)
-             (flycheck-add-mode 'javascript-eslint 'web-mode)
-             (flycheck-add-mode 'javascript-eslint 'js2-mode)
-             ;; disable jshint since we prefer eslint checking
-             (setq-default flycheck-disabled-checkers
-                           (append flycheck-disabled-checkers
-                                   '(javascript-jshint))))
+  :ensure
+  :config
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (flycheck-add-mode 'javascript-eslint 'js2-mode)
+  ;; disable jshint since we prefer eslint checking
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(javascript-jshint))))
 (use-package jedi-core
-             :config
-             (setq jedi:use-shortcuts t) ; M-. and M-,
-             (add-hook 'python-mode-hook 'jedi:setup))
-(use-package company-jedi
-             :config
-             (add-hook 'python-mode-hook
-                       (lambda () (add-to-list 'company-backends
-                                               'company-jedi))))
+  :config
+  (setq jedi:use-shortcuts t) ; M-. and M-,
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (use-package company-jedi
+    :ensure
+    :config
+    (add-hook 'python-mode-hook
+              (lambda () (add-to-list 'company-backends
+                                      'company-jedi)))))
 
 (add-hook 'python-mode-hook 'subword-mode)
 (add-hook 'python-mode-hook
@@ -247,10 +250,12 @@
 (use-package docker)
 
 (use-package which-key
+  :ensure
   :diminish which-key-mode
   :config (which-key-mode t))
 
 (use-package expand-region
+  :ensure
   :bind ("C-@" . er/expand-region))
 
 (use-package diff-hl
