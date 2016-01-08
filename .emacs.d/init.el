@@ -2,6 +2,37 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 
+;;{{{ Fonts and Colours
+
+(global-font-lock-mode t)                ; turn on syntax highlighting
+(setq font-lock-maximum-decoration t)
+
+(font-lock-add-keywords nil ; highlight XXX style code tags in source files
+                        '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\)" 1
+                           font-lock-warning-face prepend)))
+
+;; Font selection graceful fallback: http://emacswiki.org/emacs/SetFonts
+(defun font-candidate (&rest fonts)
+  "Return existing font which first match."
+  (require 'cl)
+  (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
+(set-face-attribute 'default
+                    nil
+                    :font (font-candidate "Consolas-10"
+                                          "Ubuntu Mono-10"
+                                          "Droid Sans Mono-8"
+                                          "DejaVu Sans Mono-10"))
+
+;; Colour support in compilation mode
+(ignore-errors
+  (require 'ansi-color)
+  (defun my-colorize-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
+
+;;}}}
+
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -266,35 +297,6 @@
                  (innamespace . -))))
 (setq c-default-style
       '((java-mode . "java") (awk-mode . "awk") (other . "my-bsd")))
-
-;;{{{ Fonts and Colours
-
-(global-font-lock-mode t)                ; turn on syntax highlighting
-(setq font-lock-maximum-decoration t)
-
-(font-lock-add-keywords nil ; highlight XXX style code tags in source files
-                        '(("\\<\\(FIXME\\|HACK\\|XXX\\|TODO\\)" 1
-                           font-lock-warning-face prepend)))
-
-;; Font selection graceful fallback: http://emacswiki.org/emacs/SetFonts
-(defun font-candidate (&rest fonts)
-  "Return existing font which first match."
-  (require 'cl)
-  (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
-(set-face-attribute 'default
-                    nil
-                    :font (font-candidate "Consolas-10:weight=normal"
-                                          "DejaVu Sans Mono-10:weight=normal"))
-
-;; Colour support in compilation mode
-(ignore-errors
-  (require 'ansi-color)
-  (defun my-colorize-compilation-buffer ()
-    (when (eq major-mode 'compilation-mode)
-      (ansi-color-apply-on-region compilation-filter-start (point-max))))
-  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
-
-;;}}}
 
 ;;{{{ Miscellaneous
 
