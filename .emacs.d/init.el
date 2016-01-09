@@ -180,6 +180,8 @@
   (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
   (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
 
+(use-package clang-format)
+
 (use-package irony
   :diminish "Iy"
   :config
