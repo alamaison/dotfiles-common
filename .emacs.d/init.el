@@ -330,6 +330,7 @@
 (setq-default indicate-empty-lines t)    ; show end-of-file in fringe
 (global-set-key (kbd "C-j") 'newline)    ; Give C-J same behaviour as RET > 24.1
 (setq scroll-preserve-screen-position 'always) ; Restore point when scrolling back
+(setq vc-follow-symlinks t)              ; Don't prompt to follow symlinks
 
 (defun my-compilation-mode-hook ()
   ;; wrapping in compilation window
