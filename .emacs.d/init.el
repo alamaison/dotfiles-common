@@ -166,6 +166,7 @@
             (require 'helm-config)
             (setq helm-ff-file-name-history-use-recentf t)
             (helm-mode 1)
+            (use-package wgrep-helm :ensure)
             (use-package helm-projectile
               :config (helm-projectile-on))))
 
