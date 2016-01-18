@@ -19,7 +19,7 @@
 (set-face-attribute 'default
                     nil
                     :font (font-candidate "Consolas-10"
-                                          "Ubuntu Mono-10"
+                                          "Ubuntu Mono"
                                           "Droid Sans Mono-8"
                                           "DejaVu Sans Mono-10"))
 
@@ -36,7 +36,6 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
@@ -168,6 +167,7 @@
             (helm-mode 1)
             (use-package wgrep-helm :ensure)
             (use-package helm-projectile
+              :ensure
               :config (helm-projectile-on))))
 
 
@@ -180,6 +180,8 @@
     (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
   (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
   (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
+
+(use-package clang-format)
 
 (use-package irony
   :diminish "Iy"
@@ -204,23 +206,25 @@
     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
 
 (use-package flycheck
-             :config
-             (add-hook 'after-init-hook 'global-flycheck-mode)
-             (flycheck-add-mode 'javascript-eslint 'web-mode)
-             (flycheck-add-mode 'javascript-eslint 'js2-mode)
-             ;; disable jshint since we prefer eslint checking
-             (setq-default flycheck-disabled-checkers
-                           (append flycheck-disabled-checkers
-                                   '(javascript-jshint))))
+  :ensure
+  :config
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (flycheck-add-mode 'javascript-eslint 'js2-mode)
+  ;; disable jshint since we prefer eslint checking
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(javascript-jshint))))
 (use-package jedi-core
-             :config
-             (setq jedi:use-shortcuts t) ; M-. and M-,
-             (add-hook 'python-mode-hook 'jedi:setup))
-(use-package company-jedi
-             :config
-             (add-hook 'python-mode-hook
-                       (lambda () (add-to-list 'company-backends
-                                               'company-jedi))))
+  :config
+  (setq jedi:use-shortcuts t) ; M-. and M-,
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (use-package company-jedi
+    :ensure
+    :config
+    (add-hook 'python-mode-hook
+              (lambda () (add-to-list 'company-backends
+                                      'company-jedi)))))
 
 (add-hook 'python-mode-hook 'subword-mode)
 (add-hook 'python-mode-hook
@@ -248,20 +252,22 @@
 (use-package docker)
 
 (use-package which-key
+  :ensure
   :diminish which-key-mode
   :config (which-key-mode t))
 
 (use-package expand-region
+  :ensure
   :bind ("C-@" . er/expand-region))
 
 (use-package diff-hl
-    :ensure
-    :init
-    (add-hook 'prog-mode-hook 'diff-hl-mode))
+  :ensure
+  :init
+  (add-hook 'prog-mode-hook 'diff-hl-mode))
 
 (use-package diff-hl-dired
-    :init
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+  :init
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 (use-package symon)
 
@@ -291,9 +297,9 @@
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 
 (c-add-style "my-bsd"
-              '("bsd"
-                (c-offsets-alist
-                 (innamespace . -))))
+             '("bsd"
+               (c-offsets-alist
+                (innamespace . -))))
 (setq c-default-style
       '((java-mode . "java") (awk-mode . "awk") (other . "my-bsd")))
 
@@ -339,6 +345,7 @@
 (global-set-key (kbd "C-j") 'newline)    ; Give C-J same behaviour as RET > 24.1
 (setq scroll-preserve-screen-position 'always) ; Restore point when scrolling back
 (setq vc-follow-symlinks t)              ; Don't prompt to follow symlinks
+(setq split-height-threshold nil)        ; Prefer horizontal split
 
 (defun my-compilation-mode-hook ()
   ;; wrapping in compilation window
@@ -435,6 +442,7 @@
 
 ;;}}}
 
+(use-package visual-regexp-steroids :ensure)
 (require 'visual-regexp-steroids)
 (define-key global-map (kbd "C-M-%") 'vr/query-replace)
 (define-key esc-map (kbd "C-M-r") 'vr/isearch-backward) ;; C-M-r
