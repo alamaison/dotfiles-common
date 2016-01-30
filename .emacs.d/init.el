@@ -181,7 +181,14 @@
   (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
   (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
 
-(use-package clang-format)
+(use-package clang-format
+  :config
+  (defun local-add-format-before-save ()
+    ;; The fourth param makes this buffer-local
+    (add-hook 'before-save-hook 'clang-format-buffer nil t))
+   (add-hook 'c++-mode-hook 'local-add-format-before-save)
+   (add-hook 'c-mode-hook 'local-add-format-before-save)
+   (add-hook 'objc-mode-hook 'local-add-format-before-save))
 
 (use-package irony
   :diminish "Iy"
