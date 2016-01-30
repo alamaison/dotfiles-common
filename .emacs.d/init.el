@@ -363,10 +363,15 @@
   (add-to-list 'compilation-error-regexp-alist 'boost)
   (add-to-list 'compilation-error-regexp-alist-alist
                '(boost
-                 "^\\(.*\\)(\\([0-9]+\\)): fatal error in" 1 2)))
+                 "^\\(.*\\)(\\([0-9]+\\)): \\(?:\\(?:fatal \\)?error\\|warnin\\(g\\)\\) in \"[^\"]+\"" 1 2 nil (3)))
 
-(eval-after-load 'compilation-mode
-  '(progn (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)))
+  ;; Recognise addtional MSVC messages - like built-in MS rule, but accepts any
+  ;; word after see. Used to catch "see reference"
+  (add-to-list 'compilation-error-regexp-alist 'msft-see)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(msft-see "^ *\\([0-9]+>\\)? *\\(\\(?:[a-zA-Z]:\\)?[^:(	\n]+\\)(\\([0-9]+\\)) ?: see " 2 3 nil
+       0)))
+(add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
 
 (cond
  ((executable-find "aspell")
