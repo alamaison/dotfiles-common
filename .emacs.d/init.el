@@ -232,6 +232,14 @@
     (add-hook 'python-mode-hook
               (lambda () (add-to-list 'company-backends
                                       'company-jedi)))))
+(use-package py-autopep8
+  :ensure
+  :config
+  (setq py-autopep8-options '("--max-line-length=99"))
+  (defun python-mode-keys ()
+    "Modify python-mode local key map"
+    (local-set-key (kbd "C-c C-p") 'py-autopep8-buffer))
+  (add-hook 'python-mode-hook 'python-mode-keys))
 
 (add-hook 'python-mode-hook 'subword-mode)
 (add-hook 'python-mode-hook
