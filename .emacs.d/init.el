@@ -180,6 +180,7 @@
 
 
 (use-package cmake-mode
+  :ensure
   :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
 (use-package cmake-project
@@ -190,6 +191,7 @@
   (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
 
 (use-package clang-format
+  :ensure
   :config
   (defun local-add-format-before-save ()
     ;; The fourth param makes this buffer-local
