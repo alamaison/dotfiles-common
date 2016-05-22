@@ -379,7 +379,7 @@
   ;; word after see. Used to catch "see reference"
   (add-to-list 'compilation-error-regexp-alist 'msft-see)
   (add-to-list 'compilation-error-regexp-alist-alist
-               '(msft-see "^ *\\([0-9]+>\\)? *\\(\\(?:[a-zA-Z]:\\)?[^:(	\n]+\\)(\\([0-9]+\\)) ?: \\(?:see\\|could be\\|or\\) " 2 3 nil
+               '(msft-see "^ *\\([0-9]+>\\)? *\\(\\(?:[a-zA-Z]:\\)?[^:(	\n]+\\)(\\([0-9]+\\)) ?: \\(?:see\\|could be\\|or\\|note\\) " 2 3 nil
        0)))
 (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
 
