@@ -350,7 +350,6 @@
 (scroll-bar-mode -1)                     ; turn off scroll bars
 (show-paren-mode t)                      ; turn on paranthesis highlighting
 (setq case-fold-search t)                ; make search ignore case
-(setq compilation-skip-threshold 2)      ; skip warning on compilation next
 (setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
 (add-to-list                             ; Make log files auto-tail
  'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
@@ -366,6 +365,9 @@
   ;; wrapping in compilation window
   (setq truncate-lines nil)
   (setq truncate-partial-width-windows nil)
+
+  (setq compilation-skip-threshold 2)      ; skip warning on compilation next
+  (setq compilation-auto-jump-to-first-error t) ; scroll to first error
 
   ;; Recognise Boost.Test failures
   (add-to-list 'compilation-error-regexp-alist 'boost)
