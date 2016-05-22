@@ -159,8 +159,7 @@
   :bind (("M-x" . helm-M-x)
          ("C-x b" . helm-mini)
          ("C-x C-f" . helm-find-files)
-         ("M-s o" . helm-occur)
-         ("M-s g" . helm-grep-do-git-grep))
+         ("M-s o" . helm-occur))
   :config (progn
             (require 'helm-config)
             (setq helm-ff-file-name-history-use-recentf t)
@@ -168,7 +167,16 @@
             (use-package wgrep-helm :ensure)
             (use-package helm-projectile
               :ensure
-              :config (helm-projectile-on))))
+              :config (helm-projectile-on))
+            (use-package helm-git-grep
+              :ensure
+              :bind ("M-s g" . helm-git-grep)
+              :config
+              ;; Invoke `helm-git-grep' from isearch.
+              (define-key isearch-mode-map (kbd "C-c g") 'helm-git-grep-from-isearch)
+              ;; Invoke `helm-git-grep' from other helm.
+              (eval-after-load 'helm
+                '(define-key helm-map (kbd "C-c g") 'helm-git-grep-from-helm)))))
 
 
 (use-package cmake-mode
