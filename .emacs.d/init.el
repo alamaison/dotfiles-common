@@ -216,11 +216,17 @@
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
   (use-package company-irony
     :config
-    (eval-after-load 'company
-      '(add-to-list 'company-backends 'company-irony))
+    (use-package company-irony-c-headers
+      :config
+      (eval-after-load 'company
+        '(add-to-list 'company-backends '(company-irony-c-headers company-irony))))
     ;; completion at interesting places, such as after scope operator
     ;; std::|
-    (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
+    (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands))
+  (use-package flycheck-irony
+    :config
+    (eval-after-load 'flycheck
+      '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))))
 
 (use-package flycheck
   :ensure
@@ -232,6 +238,14 @@
   (setq-default flycheck-disabled-checkers
                 (append flycheck-disabled-checkers
                         '(javascript-jshint))))
+
+(defun recompile-dwim ()
+  (interactive)
+  (if (condition-case nil (and projectile-require-project-root
+                               (projectile-project-root))
+        (error nil))
+      (projectile-compile-project nil) (recompile)))
+
 (use-package jedi-core
   :config
   (setq jedi:use-shortcuts t) ; M-. and M-,
