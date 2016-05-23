@@ -159,8 +159,7 @@
   :bind (("M-x" . helm-M-x)
          ("C-x b" . helm-mini)
          ("C-x C-f" . helm-find-files)
-         ("M-s o" . helm-occur)
-         ("M-s g" . helm-grep-do-git-grep))
+         ("M-s o" . helm-occur))
   :config (progn
             (require 'helm-config)
             (setq helm-ff-file-name-history-use-recentf t)
@@ -168,10 +167,20 @@
             (use-package wgrep-helm :ensure)
             (use-package helm-projectile
               :ensure
-              :config (helm-projectile-on))))
+              :config (helm-projectile-on))
+            (use-package helm-git-grep
+              :ensure
+              :bind ("M-s g" . helm-git-grep)
+              :config
+              ;; Invoke `helm-git-grep' from isearch.
+              (define-key isearch-mode-map (kbd "C-c g") 'helm-git-grep-from-isearch)
+              ;; Invoke `helm-git-grep' from other helm.
+              (eval-after-load 'helm
+                '(define-key helm-map (kbd "C-c g") 'helm-git-grep-from-helm)))))
 
 
 (use-package cmake-mode
+  :ensure
   :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
 (use-package cmake-project
@@ -182,6 +191,7 @@
   (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
 
 (use-package clang-format
+  :ensure
   :config
   (defun local-add-format-before-save ()
     ;; The fourth param makes this buffer-local
@@ -206,11 +216,17 @@
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
   (use-package company-irony
     :config
-    (eval-after-load 'company
-      '(add-to-list 'company-backends 'company-irony))
+    (use-package company-irony-c-headers
+      :config
+      (eval-after-load 'company
+        '(add-to-list 'company-backends '(company-irony-c-headers company-irony))))
     ;; completion at interesting places, such as after scope operator
     ;; std::|
-    (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)))
+    (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands))
+  (use-package flycheck-irony
+    :config
+    (eval-after-load 'flycheck
+      '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))))
 
 (use-package flycheck
   :ensure
@@ -222,6 +238,14 @@
   (setq-default flycheck-disabled-checkers
                 (append flycheck-disabled-checkers
                         '(javascript-jshint))))
+
+(defun recompile-dwim ()
+  (interactive)
+  (if (condition-case nil (and projectile-require-project-root
+                               (projectile-project-root))
+        (error nil))
+      (projectile-compile-project nil) (recompile)))
+
 (use-package jedi-core
   :config
   (setq jedi:use-shortcuts t) ; M-. and M-,
@@ -350,7 +374,6 @@
 (scroll-bar-mode -1)                     ; turn off scroll bars
 (show-paren-mode t)                      ; turn on paranthesis highlighting
 (setq case-fold-search t)                ; make search ignore case
-(setq compilation-skip-threshold 2)      ; skip warning on compilation next
 (setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
 (add-to-list                             ; Make log files auto-tail
  'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
@@ -367,6 +390,9 @@
   (setq truncate-lines nil)
   (setq truncate-partial-width-windows nil)
 
+  (setq compilation-skip-threshold 2)      ; skip warning on compilation next
+  (setq compilation-auto-jump-to-first-error t) ; scroll to first error
+
   ;; Recognise Boost.Test failures
   (add-to-list 'compilation-error-regexp-alist 'boost)
   (add-to-list 'compilation-error-regexp-alist-alist
@@ -377,7 +403,7 @@
   ;; word after see. Used to catch "see reference"
   (add-to-list 'compilation-error-regexp-alist 'msft-see)
   (add-to-list 'compilation-error-regexp-alist-alist
-               '(msft-see "^ *\\([0-9]+>\\)? *\\(\\(?:[a-zA-Z]:\\)?[^:(	\n]+\\)(\\([0-9]+\\)) ?: \\(?:see\\|could be\\|or\\) " 2 3 nil
+               '(msft-see "^ *\\([0-9]+>\\)? *\\(\\(?:[a-zA-Z]:\\)?[^:(	\n]+\\)(\\([0-9]+\\)) ?: \\(?:see\\|could be\\|or\\|note\\) " 2 3 nil
        0)))
 (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
 
