@@ -170,8 +170,10 @@
               :config (helm-projectile-on))
             (use-package helm-git-grep
               :ensure
-              :bind ("M-s g" . helm-git-grep)
+              :bind ("M-s g" . helm-git-grep-at-point)
               :config
+              ;; Disable result limit
+              (setq helm-git-grep-candidate-number-limit nil)
               ;; Invoke `helm-git-grep' from isearch.
               (define-key isearch-mode-map (kbd "C-c g") 'helm-git-grep-from-isearch)
               ;; Invoke `helm-git-grep' from other helm.
