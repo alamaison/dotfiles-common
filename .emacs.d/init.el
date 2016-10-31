@@ -370,8 +370,10 @@
 (setq-default fill-column 80)
 (prefer-coding-system 'utf-8)
 (setq inhibit-startup-message t)         ; turn off splash screen
-(tool-bar-mode -1)                       ; turn off tool bar
-(scroll-bar-mode -1)                     ; turn off scroll bars
+(if (display-graphic-p)
+    (progn
+      (tool-bar-mode -1)                 ; turn off tool bar
+      (scroll-bar-mode -1)))             ; turn off scroll bars
 (show-paren-mode t)                      ; turn on paranthesis highlighting
 (setq case-fold-search t)                ; make search ignore case
 (setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
