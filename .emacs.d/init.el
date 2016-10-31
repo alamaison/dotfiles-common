@@ -378,7 +378,7 @@
 (setq case-fold-search t)                ; make search ignore case
 (setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
 (add-to-list                             ; Make log files auto-tail
- 'auto-mode-alist '("\\.log\\'" . auto-revert-tail-mode))
+ 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
 (add-hook                                ; strip trailing whitespace on save
  'before-save-hook 'delete-trailing-whitespace)
 (setq-default indicate-empty-lines t)    ; show end-of-file in fringe
