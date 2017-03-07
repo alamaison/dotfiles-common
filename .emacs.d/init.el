@@ -285,6 +285,28 @@
   :mode (("\\.scss$" . scss-mode))
   :config (setq scss-compile-at-save nil))
 
+(use-package go-mode
+  :commands go-mode
+  :init
+  (progn
+    ;;(setq gofmt-command "goimports")
+    (add-hook 'before-save-hook 'gofmt-before-save)
+    (bind-key [remap find-tag] #'godef-jump))
+  :config
+  (add-hook 'go-mode-hook 'electric-pair-mode)
+  (add-hook 'go-mode-hook 'flycheck-mode)
+  (use-package company-go
+    :ensure t
+    :defer t
+    :init
+    (with-eval-after-load 'company
+      (add-to-list 'company-backends 'company-go)))
+  (use-package go-eldoc
+    :ensure t
+    :defer
+    :init
+    (add-hook 'go-mode-hook 'go-eldoc-setup)))
+
 (use-package restclient)
 
 (use-package dockerfile-mode
