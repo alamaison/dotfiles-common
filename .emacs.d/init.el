@@ -273,15 +273,49 @@
 ;; Please/Blaze files are Python-like
 (add-to-list 'auto-mode-alist '("BUILD\\'" . python-mode))
 
+(use-package web-mode
+  :ensure
+  :mode (("\\.jsx?$" . web-mode))
+  :config
+  (defun my-web-mode-hook ()
+    ;; short circuit js mode and just do everything in jsx-mode
+    (if (equal web-mode-content-type "javascript")
+        (web-mode-set-content-type "jsx"))
+    (setq web-mode-markup-indent-offset 2
+          web-mode-css-indent-offset 2
+          web-mode-code-indent-offset 2)
+    (set-variable 'indent-tabs-mode nil)
+    (tern-mode t))
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
+  (add-hook 'web-mode-hook 'subword-mode))
+
 (use-package js2-mode
-  :mode (("\\.js$" . js2-mode))
   :config
   (setq-default indent-tabs-mode nil)
-  (add-hook 'js2-mode-hook 'my-js2-mode)
   (defun my-js2-mode ()
     (set-variable 'indent-tabs-mode nil)
-    (setq-default js2-basic-offset 2))
-  )
+    (setq-default js2-basic-offset 2)
+    (setq mode-name "js")
+    (tern-mode t))
+  (add-hook 'js2-mode-hook 'my-js2-mode)
+  (add-hook 'js2-mode-hook 'subword-mode)
+  (use-package js2-refactor
+    :config
+    (add-hook 'js2-mode-hook #'js2-refactor-mode)
+    (js2r-add-keybindings-with-prefix "C-c C-m")))
+
+(use-package tern
+  :config
+  (use-package company-tern
+    :init (eval-after-load 'company
+            '(add-to-list 'company-backends 'company-tern))))
+
+(use-package json-mode
+  :config
+  (add-hook 'json-mode-hook
+            (lambda ()
+              (make-local-variable 'js-indent-level)
+              (setq js-indent-level 2))))
 
 (use-package scss-mode
   :mode (("\\.scss$" . scss-mode))
