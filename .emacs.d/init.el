@@ -270,6 +270,8 @@
 (add-hook 'python-mode-hook 'subword-mode)
 (add-hook 'python-mode-hook
           (lambda () (local-set-key (kbd "C-c C-c") 'recompile)))
+;; Please/Blaze files are Python-like
+(add-to-list 'auto-mode-alist '("BUILD\\'" . python-mode))
 
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode))
