@@ -2,6 +2,14 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 
+;;{{{ Emacs Server
+
+(load "server")
+(unless (server-running-p) (server-start))
+
+;;;}}}
+
+
 ;;{{{ Fonts and Colours
 
 (global-font-lock-mode t)                ; turn on syntax highlighting
