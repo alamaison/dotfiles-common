@@ -57,11 +57,7 @@
 (use-package diminish
   :ensure t)
 
-(use-package session
-  :ensure t
-  :init
-  (setq session-globals-max-size 150)
-  (add-hook 'after-init-hook 'session-initialize))
+(desktop-save-mode 1)
 
 (use-package comment-dwim-2
   :ensure t
