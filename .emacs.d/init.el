@@ -463,17 +463,13 @@
 (global-set-key (kbd "C-c C-c") 'recompile)
 (global-set-key (kbd "M-s r") 'rgrep)
 
-
-(defun visit-term-buffer ()
-  "Create or visit a terminal buffer."
-  (interactive)
-  (if (not (get-buffer "*ansi-term*"))
-      (progn
-        (split-window-sensibly (selected-window))
-        (other-window 1)
-        (ansi-term (getenv "SHELL")))
-    (switch-to-buffer-other-window "*ansi-term*")))
-(global-set-key (kbd "C-x t") 'visit-term-buffer)
+(use-package multi-term
+  :ensure
+  :config
+  (use-package helm-mt
+    :ensure
+    :bind ("C-x t" . helm-mt)
+    :config (helm-mt/reroute-terminal-functions t)))
 
 (setq-default fill-column 80)
 (prefer-coding-system 'utf-8)
