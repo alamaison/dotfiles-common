@@ -148,7 +148,8 @@
   :ensure t
   :config
   (setq ido-enable-flex-matching t)
-  (setq ido-everywhere t)
+  ;; (setq ido-everywhere t) ; Disabled because this conflicts with Helm.  See https://github.com/emacs-helm/helm/issues/1819
+  (setq ido-auto-merge-work-directories-length -1) ; Disable annoying auto-match path
   (ido-mode t)
   (use-package flx-ido  ; better matching
     :ensure t
