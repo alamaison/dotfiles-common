@@ -144,6 +144,11 @@
 	 company-tooltip-limit 20)
   :config (add-hook 'after-init-hook 'global-company-mode))
 
+(use-package company-quickhelp          ; Documentation popups for Company
+  :ensure t
+  :defer t
+  :init (add-hook 'global-company-mode-hook #'company-quickhelp-mode))
+
 (use-package ido
   :ensure t
   :config
