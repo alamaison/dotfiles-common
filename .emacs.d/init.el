@@ -259,15 +259,31 @@
       (projectile-compile-project nil) (recompile)))
 
 (use-package jedi-core
+  :ensure
   :config
   (setq jedi:use-shortcuts t) ; M-. and M-,
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (use-package company-jedi
-    :ensure
-    :config
-    (add-hook 'python-mode-hook
-              (lambda () (add-to-list 'company-backends
-                                      'company-jedi)))))
+  :hook (python-mode . jedi:setup))
+
+(use-package company-jedi
+  :after (company jedi-core)
+  :ensure
+  :hook (python-mode . (lambda () (add-to-list 'company-backends
+                                               'company-jedi))))
+
+(use-package anaconda-mode
+  :disabled
+  :ensure
+  :hook ((python-mode)
+         (python-mode . anaconda-eldoc-mode))
+  :bind (:map anaconda-mode-map
+              ("M-," . anaconda-mode-go-back)))
+
+(use-package company-anaconda
+  :after (company anaconda-mode)
+  :ensure
+  :hook (python-mode . (lambda () (add-to-list 'company-backends
+                                               'company-anaconda))))
+
 (use-package py-autopep8
   :ensure
   :config
