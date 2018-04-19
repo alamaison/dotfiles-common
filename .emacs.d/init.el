@@ -364,7 +364,7 @@
               ;; (smartparens-mode t)
               ;; (rainbow-delimiters-mode t)
               ;; (highlight-symbol-mode t)
-              (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
+              ))
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-meghanada))
   :config
