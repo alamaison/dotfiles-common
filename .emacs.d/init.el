@@ -392,25 +392,29 @@
 
 (use-package go-mode
   :commands go-mode
+  :hook ((go-mode . flycheck-mode)
+         (go-mode . subword-mode)
+         (before-save . gofmt-before-save))
   :init
-  (progn
-    ;;(setq gofmt-command "goimports")
-    (add-hook 'before-save-hook 'gofmt-before-save)
-    (bind-key [remap find-tag] #'godef-jump))
-  :config
-  (add-hook 'go-mode-hook 'electric-pair-mode)
-  (add-hook 'go-mode-hook 'flycheck-mode)
-  (use-package company-go
-    :ensure t
-    :defer t
-    :init
-    (with-eval-after-load 'company
-      (add-to-list 'company-backends 'company-go)))
-  (use-package go-eldoc
-    :ensure t
-    :defer
-    :init
-    (add-hook 'go-mode-hook 'go-eldoc-setup)))
+  (setq gofmt-command "goimports")
+  (setq go-tab-width 4))
+  ;;   (bind-key [remap find-tag] #'godef-jump))
+
+(use-package flycheck-gometalinter
+  :after go-mode flycheck
+  :ensure
+  :hook (flycheck-mode . flycheck-gometalinter-setup))
+
+(use-package go-eldoc
+  :after go-mode
+  :ensure t
+  :hook (go-mode . go-eldoc-setup))
+
+(use-package company-go
+  :after go-mode
+  :ensure t
+  :hook (go-mode . (lambda () (add-to-list 'company-backends
+                                           'company-go))))
 
 (use-package restclient)
 
