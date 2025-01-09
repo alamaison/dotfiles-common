@@ -26,7 +26,8 @@
   (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
 (set-face-attribute 'default
                     nil
-                    :font (font-candidate "Consolas-10"
+                    :font (font-candidate "MesloLGS Nerd Font Mono-9"
+                                          "Consolas-10"
                                           "Ubuntu Mono"
                                           "Droid Sans Mono-8"
                                           "DejaVu Sans Mono-10"))
@@ -54,6 +55,10 @@
 (eval-when-compile
   (require 'use-package))
 
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
 (use-package diminish
   :ensure t)
 
@@ -126,13 +131,16 @@
 
 (use-package magit
   :ensure t
-  :bind ("C-x g" . magit-status)
-  :config
-  (use-package magit-gitflow
-    :diminish "GitF"
-    :config (add-hook
-	     'magit-mode-hook
-	     'turn-on-magit-gitflow)))
+  :bind ("C-x g" . magit-status))
+(use-package forge
+  :ensure t
+  :after magit)
+(use-package magit-gitflow
+  :after magit
+  :diminish "GitF"
+  :config (add-hook
+	   'magit-mode-hook
+	   'turn-on-magit-gitflow))
 
 (use-package company
   :ensure t
@@ -163,32 +171,40 @@
     (setq ido-use-faces nil)))
 
 (use-package helm
-  :ensure
-  :demand
+  :ensure t
+  :config
+  (setq helm-split-window-inside-p t)
+  (setq helm-use-frame-when-more-than-two-windows nil)
+  (helm-autoresize-mode 1))
+
+(use-package helm-mode
   :diminish helm-mode
-  :bind (("M-x" . helm-M-x)
-         ("C-x b" . helm-mini)
-         ("C-x C-f" . helm-find-files)
-         ("M-s o" . helm-occur))
-  :config (progn
-            (require 'helm-config)
-            (setq helm-ff-file-name-history-use-recentf t)
-            (helm-mode 1)
-            (use-package wgrep-helm :ensure)
-            (use-package helm-projectile
-              :ensure
-              :config (helm-projectile-on))
-            (use-package helm-git-grep
-              :ensure
-              :bind ("M-s g" . helm-git-grep-at-point)
-              :config
-              ;; Disable result limit
-              (setq helm-git-grep-candidate-number-limit nil)
-              ;; Invoke `helm-git-grep' from isearch.
-              (define-key isearch-mode-map (kbd "C-c g") 'helm-git-grep-from-isearch)
-              ;; Invoke `helm-git-grep' from other helm.
-              (eval-after-load 'helm
-                '(define-key helm-map (kbd "C-c g") 'helm-git-grep-from-helm)))))
+  :config (helm-mode 1))
+
+(use-package helm-command
+  :bind (("M-x" . helm-M-x)))
+
+(use-package helm-files
+  :bind (("C-x C-f" . helm-find-files))
+  :config (setq helm-ff-file-name-history-use-recentf t))
+
+(use-package helm-buffers
+  :bind (("C-x C-b" . helm-buffers-list)
+         ("C-x b" . helm-mini))
+  :config (setq helm-buffer-max-length nil))
+
+(use-package helm-occur
+  :bind (("M-s o" . helm-occur)))
+
+(use-package helm-projectile
+  :ensure
+  :config (helm-projectile-on))
+
+(use-package helm-git-grep
+  :ensure
+  :bind (("M-s g" . helm-git-grep)))
+
+(use-package wgrep-helm :ensure)
 
 
 (use-package cmake-mode
@@ -196,6 +212,7 @@
   :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
 (use-package cmake-project
+  :ensure
   :config
   (defun maybe-cmake-project-hook ()
     (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
@@ -213,6 +230,7 @@
    (add-hook 'objc-mode-hook 'local-add-format-before-save))
 
 (use-package irony
+  :ensure
   :diminish "Iy"
   :config
   (setq w32-pipe-read-delay 0)
@@ -227,6 +245,7 @@
   (add-hook 'irony-mode-hook 'my-irony-mode-hook)
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
   (use-package company-irony
+    :ensure
     :config
     (use-package company-irony-c-headers
       :config
@@ -236,6 +255,7 @@
     ;; std::|
     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands))
   (use-package flycheck-irony
+    :ensure
     :config
     (eval-after-load 'flycheck
       '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))))
@@ -316,6 +336,7 @@
   (add-hook 'web-mode-hook 'subword-mode))
 
 (use-package js2-mode
+  :ensure
   :config
   (setq-default indent-tabs-mode nil)
   (defun my-js2-mode ()
@@ -326,17 +347,13 @@
   (add-hook 'js2-mode-hook 'my-js2-mode)
   (add-hook 'js2-mode-hook 'subword-mode)
   (use-package js2-refactor
+    :ensure
     :config
     (add-hook 'js2-mode-hook #'js2-refactor-mode)
     (js2r-add-keybindings-with-prefix "C-c C-m")))
 
-(use-package tern
-  :config
-  (use-package company-tern
-    :init (eval-after-load 'company
-            '(add-to-list 'company-backends 'company-tern))))
-
 (use-package json-mode
+  :ensure
   :config
   (add-hook 'json-mode-hook
             (lambda ()
@@ -416,12 +433,12 @@
   :hook (go-mode . (lambda () (add-to-list 'company-backends
                                            'company-go))))
 
-(use-package restclient)
+(use-package restclient :ensure)
 
 (use-package dockerfile-mode
   :mode (("Dockerfile\\'" . dockerfile-mode)))
 
-(use-package docker)
+(use-package docker :ensure)
 
 (use-package which-key
   :ensure
@@ -441,7 +458,7 @@
   :init
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
-(use-package symon)
+(use-package symon :ensure)
 
 (defun my-c-mode-common-hook ()
   ;; force only spaces for indentation
@@ -476,6 +493,7 @@
       '((java-mode . "java") (awk-mode . "awk") (other . "my-bsd")))
 
 (use-package protobuf-mode
+  :ensure
   :config
   (defconst my-protobuf-style
     '((c-basic-offset . 4) (indent-tabs-mode . nil)))
