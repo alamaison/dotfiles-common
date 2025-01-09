@@ -178,6 +178,7 @@
   :config
   (setq helm-split-window-inside-p t)
   (setq helm-use-frame-when-more-than-two-windows nil)
+  (setq helm-move-to-line-cycle-in-source nil)
   (helm-autoresize-mode 1))
 
 (use-package helm-mode
@@ -454,8 +455,7 @@
 
 (use-package diff-hl
   :ensure
-  :init
-  (add-hook 'prog-mode-hook 'diff-hl-mode))
+  :hook prog-mode-hook)
 
 (use-package diff-hl-dired
   :init
