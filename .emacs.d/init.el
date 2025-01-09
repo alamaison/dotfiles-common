@@ -48,12 +48,15 @@
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
-;; Bootstrap `use-package'
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-when-compile
-  (require 'use-package))
+(require 'use-package-ensure)
+
+;; Bootstrap Quelpa
+(use-package quelpa
+  :ensure)
+(use-package quelpa-use-package
+  :demand
+  :config
+  (quelpa-use-package-activate-advice))
 
 (use-package exec-path-from-shell
   :ensure t
@@ -636,6 +639,22 @@
                                     "324" "329" "332" "333" "353" "477"))))
 
 ;;}}}
+
+(use-package nvm
+  :quelpa ((nvm :fetcher github
+                :repo "rejeep/nvm.el")
+                :upgrade t)
+  :config
+  (nvm-use "20"))
+
+(use-package copilot
+  :ensure
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)))
 
 (use-package visual-regexp-steroids
   :ensure
