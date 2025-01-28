@@ -42,21 +42,25 @@
 
 ;;}}}
 
+;; Calm the warnings popup downcase
+(setq warning-minimum-level :error)
+
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
-(require 'use-package-ensure)
-
 ;; Bootstrap Quelpa
 (use-package quelpa
   :ensure)
 (use-package quelpa-use-package
+  :ensure
   :demand
   :config
   (quelpa-use-package-activate-advice))
+
+(require 'use-package-ensure)
 
 (use-package exec-path-from-shell
   :ensure t
@@ -138,12 +142,6 @@
 (use-package forge
   :ensure t
   :after magit)
-(use-package magit-gitflow
-  :after magit
-  :diminish "GitF"
-  :config (add-hook
-	   'magit-mode-hook
-	   'turn-on-magit-gitflow))
 
 (use-package company
   :ensure t
@@ -176,6 +174,7 @@
 (use-package helm
   :ensure t
   :config
+  (setq helm-allow-mouse nil) ; needed because of bug ing helm-git-grep: https://github.com/yasuyk/helm-git-grep/issues/52
   (setq helm-split-window-inside-p t)
   (setq helm-use-frame-when-more-than-two-windows nil)
   (setq helm-move-to-line-cycle-in-source nil)
@@ -206,7 +205,7 @@
 
 (use-package helm-git-grep
   :ensure
-  :bind (("M-s g" . helm-git-grep)))
+  :bind (("M-s g" . helm-git-grep-at-point)))
 
 (use-package wgrep-helm :ensure)
 
@@ -252,6 +251,7 @@
     :ensure
     :config
     (use-package company-irony-c-headers
+      :ensure
       :config
       (eval-after-load 'company
         '(add-to-list 'company-backends '(company-irony-c-headers company-irony))))
@@ -283,12 +283,14 @@
       (projectile-compile-project nil) (recompile)))
 
 (use-package jedi-core
+  :disabled
   :ensure
   :config
   (setq jedi:use-shortcuts t) ; M-. and M-,
   :hook (python-mode . jedi:setup))
 
 (use-package company-jedi
+  :disabled
   :after (company jedi-core)
   :ensure
   :hook (python-mode . (lambda () (add-to-list 'company-backends
@@ -389,8 +391,6 @@
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-meghanada))
   :config
-  (use-package realgud
-    :ensure t)
   (setq indent-tabs-mode nil)
   (setq tab-width 2)
   (setq c-basic-offset 2)
@@ -455,7 +455,7 @@
 
 (use-package diff-hl
   :ensure
-  :hook prog-mode-hook)
+  :config (global-diff-hl-mode))
 
 (use-package diff-hl-dired
   :init
