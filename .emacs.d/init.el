@@ -282,6 +282,17 @@
         (error nil))
       (projectile-compile-project nil) (recompile)))
 
+(use-package lsp-mode
+  :ensure t
+  :hook (python-mode . lsp-deferred)
+  :commands (lsp lsp-deferred))
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+(use-package helm-lsp
+  :ensure t
+  :commands helm-lsp-workspace-symbol)
+
 (use-package jedi-core
   :disabled
   :ensure
@@ -323,7 +334,7 @@
 (add-hook 'python-mode-hook
           (lambda () (local-set-key (kbd "C-c C-c") 'recompile)))
 ;; Please/Blaze files are Python-like
-(add-to-list 'auto-mode-alist '("BUILD\\'" . python-mode))
+(add-to-list 'auto-mode-alist '("BUILD\\'" . bazel-build-mode))
 
 (use-package web-mode
   :ensure
@@ -664,5 +675,9 @@
   (define-key esc-map (kbd "C-M-r") 'vr/isearch-backward) ;; C-M-r
   (define-key esc-map (kbd "C-M-s") 'vr/isearch-forward) ;; C-M-s
   (setq vr/engine 'pcre2el))
+
+(use-package envrc
+  :ensure t
+  :config (envrc-global-mode))
 
 (message "My .emacs loaded in %.2fs" (- (float-time) *emacs-load-start*))
