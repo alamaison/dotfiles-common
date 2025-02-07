@@ -68,6 +68,11 @@
   (exec-path-from-shell-initialize))
 (use-package diminish
   :ensure t)
+(use-package delight
+  :ensure t)
+
+(use-package emacs
+  :diminish eldoc-mode)
 
 (desktop-save-mode 1)
 
@@ -124,6 +129,7 @@
 
 (use-package projectile
   :ensure t
+  :delight '(:eval (concat " Prj:" (projectile-project-name)))
   :config
   (defun my-format-projectile-modeline ()
     (propertize (format " |%s|" (projectile-project-name))
@@ -284,13 +290,19 @@
 
 (use-package lsp-mode
   :ensure t
+  :diminish lsp-lens-mode
   :hook (python-mode . lsp-deferred)
+  :hook (lsp-mode . (lambda ()
+                      (let ((lsp-keymap-prefix "C-c l"))
+                        (lsp-enable-which-key-integration))))
   :commands (lsp lsp-deferred)
+  :bind-keymap ("C-c l" . lsp-command-map)
   :config
   (setq lsp-pylsp-plugins-yapf-enabled t))
 (use-package lsp-ui
   :ensure t
-  :commands lsp-ui-mode)
+  :config
+  (setq lsp-ui-sideline-show-code-actions t))
 (use-package helm-lsp
   :ensure t
   :commands helm-lsp-workspace-symbol)
