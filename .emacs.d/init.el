@@ -285,7 +285,9 @@
 (use-package lsp-mode
   :ensure t
   :hook (python-mode . lsp-deferred)
-  :commands (lsp lsp-deferred))
+  :commands (lsp lsp-deferred)
+  :config
+  (setq lsp-pylsp-plugins-yapf-enabled t))
 (use-package lsp-ui
   :ensure t
   :commands lsp-ui-mode)
@@ -321,6 +323,17 @@
   :hook (python-mode . (lambda () (add-to-list 'company-backends
                                                'company-anaconda))))
 
+(use-package pytest :ensure)
+
+(use-package auto-virtualenv
+  :ensure t
+  :init
+  (use-package pyvenv
+    :ensure t)
+  :config
+  (setq auto-virtualenv-verbose t)
+  (auto-virtualenv-setup))
+
 (use-package py-autopep8
   :ensure
   :config
@@ -332,7 +345,7 @@
 
 (add-hook 'python-mode-hook 'subword-mode)
 (add-hook 'python-mode-hook
-          (lambda () (local-set-key (kbd "C-c C-c") 'recompile)))
+          (lambda () (local-set-key (kbd "C-c C-c") 'recompile-dwim)))
 ;; Please/Blaze files are Python-like
 (add-to-list 'auto-mode-alist '("BUILD\\'" . bazel-build-mode))
 
@@ -479,7 +492,7 @@
   (setq indent-tabs-mode nil
         tab-width 4
         c-basic-offset tab-width)
-  (local-set-key (kbd "C-c C-c") 'recompile))
+  (local-set-key (kbd "C-c C-c") 'recompile-dwim))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 (defun maybe-libssh2-style ()
@@ -517,7 +530,7 @@
 
 ;;{{{ Miscellaneous
 
-(global-set-key (kbd "C-c C-c") 'recompile)
+(global-set-key (kbd "C-c C-c") 'recompile-dwim)
 (global-set-key (kbd "M-s r") 'rgrep)
 
 (use-package multi-term
