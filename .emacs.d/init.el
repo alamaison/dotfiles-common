@@ -127,6 +127,10 @@
 ;;   (setq powerline-display-hud nil)
 ;;   (setq powerline-display-buffer-size nil))
 
+;; Function to check if the Nerd fonts are actually installed before letting Doom Modeline try and use them
+(defun my/nerd-icons-available-p ()
+  "Check if a Nerd Font is available in `font-family-list`."
+  (member "Symbols Nerd Font Mono" (font-family-list)))
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode)
@@ -134,7 +138,10 @@
   (setq doom-modeline-minor-modes t) ; relies on minions to make it not swamp the modeline
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-project-name t)
-  (setq doom-modeline-icon nil))
+  (setq doom-modeline-icon (not (seq-empty-p (my/nerd-icons-available-p)))))
+
+(use-package nerd-icons
+  :ensure t)
 
 (use-package minions
   :ensure t
