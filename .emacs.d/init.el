@@ -129,18 +129,14 @@
 
 (use-package projectile
   :ensure t
-  :delight '(:eval (concat " Prj:" (projectile-project-name)))
+  :init (setq projectile-mode-line-prefix " Prj")
+  ; Don't show Projectile in modeline unless in a project
+  :delight '(:eval (if (condition-case nil (and projectile-require-project-root
+                                                (projectile-project-root))
+                         (error nil))
+                       (projectile-default-mode-line) ""))
   :config
-  (defun my-format-projectile-modeline ()
-    (propertize (format " |%s|" (projectile-project-name))
-                'face '(:foreground "black" :background "#81a2be")))
-  (defun my-conditional-projectile-modeline ()
-    (if (condition-case nil (and projectile-require-project-root
-                                 (projectile-project-root))
-          (error nil))
-        (my-format-projectile-modeline) ""))
-  (setq projectile-mode-line '(:eval (my-conditional-projectile-modeline)))
-  (projectile-global-mode))
+  (projectile-mode))
 
 (use-package magit
   :ensure t
