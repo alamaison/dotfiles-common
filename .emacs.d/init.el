@@ -119,13 +119,26 @@
                         :inherit mode-line))))
      `(powerline-active2 ((t (:background ,zenburn-bg+2 :inherit mode-line)))))))
 
-(use-package powerline
+;; (use-package powerline
+;;   :ensure t
+;;   :init
+;;   (powerline-default-theme)
+;;   (setq powerline-display-mule-info nil)
+;;   (setq powerline-display-hud nil)
+;;   (setq powerline-display-buffer-size nil))
+
+(use-package doom-modeline
   :ensure t
-  :init
-  (powerline-default-theme)
-  (setq powerline-display-mule-info nil)
-  (setq powerline-display-hud nil)
-  (setq powerline-display-buffer-size nil))
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-minor-modes t) ; relies on minions to make it not swamp the modeline
+  (setq doom-modeline-buffer-encoding nil)
+  (setq doom-modeline-project-name t)
+  (setq doom-modeline-icon nil))
+
+(use-package minions
+  :ensure t
+  :config (minions-mode 1))
 
 (use-package projectile
   :ensure t
@@ -335,9 +348,6 @@
 
 (use-package auto-virtualenv
   :ensure t
-  :init
-  (use-package pyvenv
-    :ensure t)
   :config
   (setq auto-virtualenv-verbose t)
   (auto-virtualenv-setup))
@@ -549,6 +559,7 @@
     :bind ("C-x t" . helm-mt)
     :config (helm-mt/reroute-terminal-functions t)))
 
+(column-number-mode 1) ; show column number as well
 (setq-default fill-column 80)
 (prefer-coding-system 'utf-8)
 (setq inhibit-startup-message t)         ; turn off splash screen
