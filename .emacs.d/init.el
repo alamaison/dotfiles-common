@@ -22,8 +22,7 @@
 ;; Font selection graceful fallback: http://emacswiki.org/emacs/SetFonts
 (defun font-candidate (&rest fonts)
   "Return existing font which first match."
-  (require 'cl)
-  (find-if (lambda (f) (find-font (font-spec :name f))) fonts))
+  (cl-find-if (lambda (f) (find-font (font-spec :name f))) fonts))
 (set-face-attribute 'default
                     nil
                     :font (font-candidate "MesloLGS Nerd Font Mono-9"
@@ -127,10 +126,6 @@
 ;;   (setq powerline-display-hud nil)
 ;;   (setq powerline-display-buffer-size nil))
 
-;; Function to check if the Nerd fonts are actually installed before letting Doom Modeline try and use them
-(defun my/nerd-icons-available-p ()
-  "Check if a Nerd Font is available in `font-family-list`."
-  (member "Symbols Nerd Font Mono" (font-family-list)))
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode)
@@ -138,6 +133,13 @@
   (setq doom-modeline-minor-modes t) ; relies on minions to make it not swamp the modeline
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-project-name t)
+  (setq doom-modeline-check-simple-format t)
+
+  ;; Function to check if the Nerd fonts are actually installed before letting Doom Modeline try and use them
+  (defun my/nerd-icons-available-p ()
+    "Check if a Nerd Font is available in `font-family-list`."
+    (member "Symbols Nerd Font Mono" (font-family-list)))
+
   (setq doom-modeline-icon (not (seq-empty-p (my/nerd-icons-available-p)))))
 
 (use-package nerd-icons
@@ -149,14 +151,17 @@
 
 (use-package projectile
   :ensure t
-  :init (setq projectile-mode-line-prefix " Prj")
+  :init
+  (setq projectile-mode-line-prefix " Prj")
+  (projectile-mode +1)
   ; Don't show Projectile in modeline unless in a project
   :delight '(:eval (if (condition-case nil (and projectile-require-project-root
                                                 (projectile-project-root))
                          (error nil))
                        (projectile-default-mode-line) ""))
-  :config
-  (projectile-mode))
+  :bind (:map projectile-mode-map
+              ("s-p" . projectile-command-map)
+              ("C-c p" . projectile-command-map)))
 
 (use-package magit
   :ensure t
@@ -314,7 +319,11 @@
   :commands (lsp lsp-deferred)
   :bind-keymap ("C-c l" . lsp-command-map)
   :config
-  (setq lsp-pylsp-plugins-yapf-enabled t))
+  (setq lsp-pylsp-plugins-yapf-enabled t)
+  (setq lsp-pylsp-plugins-rope-autoimport-enabled t)
+  (setq lsp-pylsp-plugins-isort-enabled t)
+  (add-hook 'before-save-hook #'lsp-format-buffer)
+  (add-hook 'before-save-hook #'lsp-organize-imports))
 (use-package lsp-ui
   :ensure t
   :config
