@@ -134,7 +134,6 @@
   :ensure t
   :hook (after-init . doom-modeline-mode)
   :config
-  (setq doom-modeline-minor-modes t) ; relies on minions to make it not swamp the modeline
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-project-name t)
   (setq doom-modeline-check-simple-format t)
@@ -148,10 +147,6 @@
 
 (use-package nerd-icons
   :ensure t)
-
-(use-package minions
-  :ensure t
-  :config (minions-mode 1))
 
 (use-package projectile
   :ensure t
