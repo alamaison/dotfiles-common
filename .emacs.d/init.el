@@ -107,6 +107,10 @@
   (zenburn-with-color-variables
     (custom-theme-set-faces
      'zenburn
+     `(flycheck-warning ((((supports :underline (:style wave)))
+                          :underline (:style wave :color "DarkGrey"))
+                         (t
+                          :underline t :inherit warning)))
      `(mode-line
        ((,class (:foreground "black" :background "#f9b593" :box nil))
         (t :inverse-video t)))
@@ -575,8 +579,9 @@
     :bind ("C-x t" . helm-mt)
     :config (helm-mt/reroute-terminal-functions t)))
 
+(delete-selection-mode 1) ; overwrite text in region
 (column-number-mode 1) ; show column number as well
-(setq-default fill-column 80)
+(setq-default fill-column 79)
 (prefer-coding-system 'utf-8)
 (setq inhibit-startup-message t)         ; turn off splash screen
 (if (display-graphic-p)
