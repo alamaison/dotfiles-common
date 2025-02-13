@@ -472,37 +472,6 @@
   :commands
   (google-set-c-style))
 
-(use-package meghanada
-  :defer t
-  :init
-  (add-hook 'java-mode-hook
-            (lambda ()
-              (google-set-c-style)
-              (google-make-newline-indent)
-              (meghanada-mode t)
-              ;; (smartparens-mode t)
-              ;; (rainbow-delimiters-mode t)
-              ;; (highlight-symbol-mode t)
-              ))
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-meghanada))
-  :config
-  (setq indent-tabs-mode nil)
-  (setq tab-width 2)
-  (setq c-basic-offset 2)
-  (setq meghanada-server-remote-debug t)
-  (setq meghanada-javac-xlint "-Xlint:all,-processing")
-  :bind
-  (:map meghanada-mode-map
-        ("C-S-t" . meghanada-switch-testcase)
-        ("M-RET" . meghanada-local-variable)
-        ("C-M-." . helm-imenu)
-        ("M-r" . meghanada-reference)
-        ("M-t" . meghanada-typeinfo)
-        ("C-z" . hydra-meghanada/body))
-  :commands
-  (meghanada-mode))
-
 (use-package scss-mode
   :mode (("\\.scss$" . scss-mode))
   :config (setq scss-compile-at-save nil))
