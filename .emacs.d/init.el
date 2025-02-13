@@ -41,8 +41,47 @@
 
 ;;}}}
 
-;; Calm the warnings popup downcase
-(setq warning-minimum-level :error)
+
+;;{{{ Basic Emacs settings
+
+
+(desktop-save-mode 1)                    ; maintain sessions
+(delete-selection-mode 1)                ; overwrite text in region
+(column-number-mode 1)                   ; show column number as well as line number
+(setq-default fill-column 79)            ; wrap at Python default
+(prefer-coding-system 'utf-8)
+(setq inhibit-startup-message t)         ; turn off splash screen
+(if (display-graphic-p)
+    (progn
+      (tool-bar-mode -1)                 ; turn off tool bar
+      (scroll-bar-mode -1)))             ; turn off scroll bars
+(show-paren-mode t)                      ; turn on paranthesis highlighting
+(setq case-fold-search t)                ; make search ignore case
+(setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
+(add-to-list                             ; Make log files auto-tail
+ 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
+(add-hook                                ; strip trailing whitespace on save
+ 'before-save-hook 'delete-trailing-whitespace)
+(setq-default indicate-empty-lines t)    ; show end-of-file in fringe
+(setq scroll-preserve-screen-position 'always) ; Restore point when scrolling back
+(setq vc-follow-symlinks t)              ; Don't prompt to follow symlinks
+(setq split-height-threshold nil)        ; Prefer horizontal split
+(setq warning-minimum-level :error)      ; Calm the warnings popup
+
+;; Backups
+(setq backup-directory-alist `(("." . "~/.backups_emacs")))
+(setq backup-by-copying t)
+(setq delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+
+(global-set-key (kbd "C-j") 'newline)    ; Give C-J same behaviour as RET > 24.1
+(global-set-key (kbd "M-s r") 'rgrep)
+
+;;}}}
+
+;;{{{ Package system
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -61,6 +100,8 @@
 
 (require 'use-package-ensure)
 
+;;}}}
+
 (use-package exec-path-from-shell
   :ensure t
   :config
@@ -72,8 +113,6 @@
 
 (use-package emacs
   :diminish eldoc-mode)
-
-(desktop-save-mode 1)
 
 (use-package comment-dwim-2
   :ensure t
@@ -564,7 +603,6 @@
 ;;{{{ Miscellaneous
 
 (global-set-key (kbd "C-c C-c") 'recompile-dwim)
-(global-set-key (kbd "M-s r") 'rgrep)
 
 (use-package multi-term
   :ensure
@@ -573,28 +611,6 @@
     :ensure
     :bind ("C-x t" . helm-mt)
     :config (helm-mt/reroute-terminal-functions t)))
-
-(delete-selection-mode 1) ; overwrite text in region
-(column-number-mode 1) ; show column number as well
-(setq-default fill-column 79)
-(prefer-coding-system 'utf-8)
-(setq inhibit-startup-message t)         ; turn off splash screen
-(if (display-graphic-p)
-    (progn
-      (tool-bar-mode -1)                 ; turn off tool bar
-      (scroll-bar-mode -1)))             ; turn off scroll bars
-(show-paren-mode t)                      ; turn on paranthesis highlighting
-(setq case-fold-search t)                ; make search ignore case
-(setq ediff-window-setup-function 'ediff-setup-windows-plain) ; dont pop up ediff command window
-(add-to-list                             ; Make log files auto-tail
- 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
-(add-hook                                ; strip trailing whitespace on save
- 'before-save-hook 'delete-trailing-whitespace)
-(setq-default indicate-empty-lines t)    ; show end-of-file in fringe
-(global-set-key (kbd "C-j") 'newline)    ; Give C-J same behaviour as RET > 24.1
-(setq scroll-preserve-screen-position 'always) ; Restore point when scrolling back
-(setq vc-follow-symlinks t)              ; Don't prompt to follow symlinks
-(setq split-height-threshold nil)        ; Prefer horizontal split
 
 (defun my-compilation-mode-hook ()
   ;; wrapping in compilation window
@@ -626,17 +642,6 @@
   (setq ispell-program-name "hunspell")
   (setq ispell-extra-args '("-d en_GB")))
  )
-
-;;}}}
-
-;;{{{ Backups
-
-(setq backup-directory-alist `(("." . "~/.backups_emacs")))
-(setq backup-by-copying t)
-(setq delete-old-versions t
-      kept-new-versions 6
-      kept-old-versions 2
-      version-control t)
 
 ;;}}}
 
